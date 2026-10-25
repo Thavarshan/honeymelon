@@ -39,7 +39,7 @@
     "lucide-react": "0.577.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-i18next": "17.0.20",
+    "react-i18next": "17.1.2",
     "zod": "4.6.7",
     "@honeymelon/ui": "*",
     "@honeymelon/core": "*",
