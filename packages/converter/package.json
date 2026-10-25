@@ -23,7 +23,7 @@
     "@honeymelon/contracts": "*",
     "@honeymelon/core": "*",
     "@honeymelon/ui": "*",
-    "i18next": "26.4.7",
+    "i18next": "26.5.5",
     "react-i18next": "17.0.20",
     "lucide-react": "0.577.0"
   },
