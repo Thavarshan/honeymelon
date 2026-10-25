@@ -25,7 +25,7 @@
     "@honeymelon/ui": "*",
     "i18next": "26.4.7",
     "react-i18next": "17.0.20",
-    "lucide-react": "0.577.0"
+    "lucide-react": "1.61.0"
   },
   "peerDependencies": {
     "react": "19.3.1",
