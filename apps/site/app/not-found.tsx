@@ -16,10 +16,10 @@ export default function NotFoundPage(): ReactElement {
       <span className="not-found__number" aria-hidden="true">
         404
       </span>
-      <p className="section-kicker">SIGNAL LOST / NO FILE FOUND</p>
+      <p className="eyebrow">Page not found</p>
       <h1>Wrong orbit.</h1>
       <p>That page is not here, but the way home is just below.</p>
-      <Button asChild size="lg" className="honeymelon-cta honeymelon-cta--dark">
+      <Button asChild size="lg" className="hm-pill">
         <a href="/">
           Back to Honeymelon <span aria-hidden="true">↗</span>
         </a>

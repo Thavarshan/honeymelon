@@ -17,7 +17,7 @@ export default function PrivacyPage(): ReactElement {
 
   return (
     <main id="main-content" className="content-page" tabIndex={-1}>
-      <p className="section-kicker">TRANSPARENCY / 002</p>
+      <p className="eyebrow">Privacy</p>
       <h1>Privacy and limitations</h1>
       <h2>Desktop media processing</h2>
       <p>

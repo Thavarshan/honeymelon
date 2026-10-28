@@ -9,93 +9,86 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@honeymelon/ui/components/dialog';
-import { Menu, Star } from 'lucide-react';
-import { useEffect, useState, type ReactElement } from 'react';
+import { Github, Menu } from 'lucide-react';
+import { useState, type ReactElement } from 'react';
 
 const navigation = [
   { href: '/features/', label: 'Features' },
   { href: '/docs/', label: 'Docs' },
+  { href: '/releases/', label: 'Releases' },
   { href: 'https://github.com/Thavarshan/honeymelon/issues', label: 'Support' },
 ] as const;
 
-/** Match the reference's quiet sticky header and accessible mobile sheet. */
+/**
+ * A slim, translucent global bar in the style of Apple's product pages: brand
+ * on the left, a few centred links, one small Download pill. Narrow screens
+ * get an accessible sheet with the same links.
+ */
 export function SiteHeader({
   webAppUrl,
 }: {
   /** Present only when Honeymelon Web is deployed. */
   readonly webAppUrl?: string | undefined;
 }): ReactElement {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const updateScroll = (): void => setScrolled(window.scrollY > 10);
-
-    updateScroll();
-    window.addEventListener('scroll', updateScroll, { passive: true });
-
-    return () => window.removeEventListener('scroll', updateScroll);
-  }, []);
+  const links = webAppUrl
+    ? [...navigation.slice(0, 3), { href: webAppUrl, label: 'Web app (beta)' }]
+    : navigation;
 
   return (
-    <header className="site-header" data-scrolled={scrolled}>
-      <div className="site-container header-inner">
+    <header className="site-header">
+      <div className="site-header__inner">
         <a className="brand" href="/" aria-label="Honeymelon home">
-          <img src="/logo.svg" alt="" width="32" height="32" />
+          <img src="/logo.svg" alt="" width="24" height="24" />
           <span>Honeymelon</span>
         </a>
         <nav className="site-navigation" aria-label="Main navigation">
-          {navigation.map((link) => (
-            <Button key={link.href} asChild variant="ghost" size="sm">
-              <a href={link.href}>{link.label}</a>
-            </Button>
-          ))}
-          {webAppUrl ? (
-            <Button asChild variant="ghost" size="sm">
-              <a href={webAppUrl}>Web app (beta)</a>
-            </Button>
-          ) : null}
-          <Button asChild variant="outline" className="github-button" size="sm">
-            <a href="https://github.com/Thavarshan/honeymelon">
-              <Star aria-hidden="true" /> Star on GitHub
+          {links.map((link) => (
+            <a key={link.href} href={link.href}>
+              {link.label}
             </a>
-          </Button>
-          <Button asChild size="sm" className="site-button">
+          ))}
+        </nav>
+        <div className="site-header__actions">
+          <a
+            className="icon-link"
+            href="https://github.com/Thavarshan/honeymelon"
+            aria-label="Honeymelon on GitHub"
+          >
+            <Github aria-hidden="true" />
+          </a>
+          <Button asChild size="sm" className="hm-pill hm-pill--small">
             <a href="/download/">Download</a>
           </Button>
-        </nav>
-        <div className="mobile-navigation">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open menu">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="menu-button"
+                aria-label="Open menu"
+              >
                 <Menu aria-hidden="true" />
               </Button>
             </DialogTrigger>
             <DialogContent className="site-menu" closeLabel="Close menu">
               <DialogTitle className="brand">Honeymelon</DialogTitle>
               <DialogDescription className="sr-only">
-                Explore Honeymelon, get help, or choose a desktop download.
+                Explore Honeymelon, get help, or download it.
               </DialogDescription>
               <nav aria-label="Mobile navigation">
-                {navigation.map((link) => (
+                {links.map((link) => (
                   <DialogClose key={link.href} asChild>
                     <a href={link.href}>{link.label}</a>
                   </DialogClose>
                 ))}
-                {webAppUrl ? (
-                  <DialogClose asChild>
-                    <a href={webAppUrl}>Web app (beta)</a>
-                  </DialogClose>
-                ) : null}
                 <DialogClose asChild>
-                  <a href="/download/" className="site-button">
-                    Download
-                  </a>
+                  <a href="https://github.com/Thavarshan/honeymelon">GitHub</a>
                 </DialogClose>
-                <a href="https://github.com/Thavarshan/honeymelon">
-                  <Star aria-hidden="true" /> Star on GitHub
-                </a>
               </nav>
+              <Button asChild size="lg" className="hm-pill">
+                <a href="/download/">Download</a>
+              </Button>
             </DialogContent>
           </Dialog>
         </div>

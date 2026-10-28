@@ -47,31 +47,27 @@ export default function RootLayout({
           <SiteHeader webAppUrl={getWebAppUrl()?.href} />
           {children}
           <footer className="site-footer">
-            <div className="site-container">
+            <div className="site-footer__inner">
+              <p className="site-footer__lead">
+                Honeymelon is free and open source media conversion for your
+                computer. Your files stay yours.
+              </p>
               <div className="footer-grid">
-                <div className="footer-brand">
-                  <a className="brand" href="/" aria-label="Honeymelon home">
-                    <img src="/logo.svg" alt="" width="28" height="28" />
-                    <span>Honeymelon</span>
-                  </a>
-                  <p>
-                    Free &amp; open source media conversion. Built for your
-                    computer. Your files stay yours.
-                  </p>
-                </div>
                 <nav aria-label="Product">
                   <h2>Product</h2>
                   <a href="/features/">Features</a>
                   <a href="/download/">Download</a>
-                  <a href="/#open-source">Open Source</a>
+                  <a href="/releases/">Releases</a>
                   <a href="/docs/">Documentation</a>
                 </nav>
-                <nav aria-label="Resources">
-                  <h2>Resources</h2>
+                <nav aria-label="Community">
+                  <h2>Community</h2>
                   <a href="https://github.com/Thavarshan/honeymelon">GitHub</a>
-                  <a href="/releases/">Releases</a>
                   <a href="https://github.com/Thavarshan/honeymelon/issues">
                     Support
+                  </a>
+                  <a href="https://github.com/Thavarshan/honeymelon/blob/main/.github/CONTRIBUTING.md">
+                    Contribute
                   </a>
                 </nav>
                 <nav aria-label="Legal">

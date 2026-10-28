@@ -1,5 +1,88 @@
-import { expect, test } from '@playwright/test';
+import {
+  expect,
+  test,
+  type Browser,
+  type BrowserContext,
+  type Page,
+} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+
+const releases = 'https://github.com/Thavarshan/honeymelon/releases/download';
+const agents = {
+  windows:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  mac: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15',
+  linux:
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  ubuntu:
+    'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0',
+  iphone:
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+};
+
+/**
+ * Answer GitHub release downloads like GitHub does (an attachment, so the page
+ * stays put) and record them. No test ever fetches a real package.
+ */
+async function interceptDownloads(context: BrowserContext): Promise<string[]> {
+  const started: string[] = [];
+  await context.route('https://github.com/**', async (route) => {
+    started.push(route.request().url());
+    await route.fulfill({
+      status: 200,
+      body: '',
+      headers: { 'content-disposition': 'attachment; filename=package' },
+    });
+  });
+
+  return started;
+}
+
+test.beforeEach(async ({ context }) => {
+  await interceptDownloads(context);
+});
+
+/**
+ * A visitor with a given user agent and the processor clues a real browser
+ * would expose: client hints (Chromium) or a WebGL renderer (Safari, Firefox).
+ */
+async function visitor(
+  browser: Browser,
+  userAgent: string,
+  clues: { architecture?: string; gpu?: string; width?: number } = {},
+): Promise<{ page: Page; started: string[]; context: BrowserContext }> {
+  const context = await browser.newContext({
+    userAgent,
+    viewport: { width: clues.width ?? 1280, height: 900 },
+    baseURL: test.info().project.use.baseURL ?? '',
+  });
+  const started = await interceptDownloads(context);
+  await context.addInitScript((hints) => {
+    Object.defineProperty(Navigator.prototype, 'userAgentData', {
+      configurable: true,
+      get: () =>
+        hints.architecture
+          ? {
+              platform: '',
+              getHighEntropyValues: async () => ({
+                architecture: hints.architecture,
+                bitness: '64',
+              }),
+            }
+          : undefined,
+    });
+    HTMLCanvasElement.prototype.getContext = (() =>
+      hints.gpu
+        ? {
+            RENDERER: 7937,
+            getExtension: () => null,
+            getParameter: () => hints.gpu,
+          }
+        : null) as unknown as HTMLCanvasElement['getContext'];
+  }, clues);
+
+  return { page: await context.newPage(), started, context };
+}
 
 /**
  * Test an exported marketing site with the same browser real people use.
@@ -24,20 +107,18 @@ test('site navigates from home to official desktop downloads', async ({
 
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Smart Media Conversion',
+    'Made simple.',
   );
   await page
     .locator('.hero')
-    .getByRole('link', { name: 'Download Free' })
+    .getByRole('link', { name: /^Download/ })
     .click();
   await expect(page).toHaveURL('/download/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Download Honeymelon',
   );
 
-  const release = page.getByRole('link', {
-    name: /Browse all official releases/,
-  });
+  const release = page.getByRole('link', { name: 'All releases on GitHub' });
   await expect(release).toHaveAttribute(
     'href',
     'https://github.com/Thavarshan/honeymelon/releases',
@@ -349,158 +430,200 @@ test('mobile first paint and layout stay within lab budgets', async ({
   });
 });
 
-test('release selector offers exact assets with explicit architecture and format', async ({
+test('a Windows PC gets the matching installer automatically, once', async ({
+  browser,
+}) => {
+  const { page, started, context } = await visitor(browser, agents.windows);
+  try {
+    await page.goto('/download/');
+    await expect(page.locator('.smart-download__version')).toHaveText(
+      'Honeymelon 2.2.3 for Windows',
+    );
+    await expect(page.getByText(/Your download will begin in/)).toBeVisible();
+    await expect
+      .poll(() => started, { timeout: 8000 })
+      .toEqual([`${releases}/v2.2.3/comet-2.2.3-x64-setup.exe`]);
+    await expect(page.getByText('Thanks for downloading')).toBeVisible();
+    await expect(page).toHaveURL('/download/');
+
+    // Reloading the tab never downloads the same file again.
+    await page.reload();
+    await expect(
+      page
+        .locator('.smart-download')
+        .getByRole('link', { name: /^Download Honeymelon 2\.2\.3/ }),
+    ).toBeVisible();
+    await expect(page.getByText(/Your download will begin/)).toHaveCount(0);
+    await page.waitForTimeout(4000);
+    expect(started).toHaveLength(1);
+  } finally {
+    await context.close();
+  }
+});
+
+test('processor clues pick ARM and Apple silicon builds; Cancel stops the download', async ({
+  browser,
+}) => {
+  for (const [agent, clues, expected] of [
+    [
+      agents.windows,
+      { architecture: 'arm' },
+      'v2.2.3/comet-2.2.3-arm64-setup.exe',
+    ],
+    [
+      agents.mac,
+      { gpu: 'ANGLE (Apple, Apple M2, OpenGL 4.1)' },
+      'v2.2.3/Comet-darwin-arm64-2.2.3.zip',
+    ],
+    [
+      agents.mac,
+      { gpu: 'Intel(R) Iris(TM) Plus Graphics' },
+      'v2.2.3/Comet-darwin-x64-2.2.3.zip',
+    ],
+    [agents.ubuntu, {}, 'v2.2.3/comet_2.2.3_amd64.deb'],
+  ] as const) {
+    const { page, started, context } = await visitor(browser, agent, clues);
+    try {
+      await page.goto('/download/');
+      const button = page
+        .locator('.smart-download')
+        .getByRole('link', { name: /^Download Honeymelon 2.2.3 for/ });
+      await expect(button).toHaveAttribute('href', `${releases}/${expected}`);
+      await page.getByRole('button', { name: 'Cancel' }).click();
+      await page.waitForTimeout(3500);
+      expect(started, expected).toEqual([]);
+    } finally {
+      await context.close();
+    }
+  }
+});
+
+test('when the browser cannot tell, visitors choose with one click instead of a guess', async ({
+  browser,
+}) => {
+  const mac = await visitor(browser, agents.mac);
+  try {
+    await mac.page.goto('/download/');
+    await expect(
+      mac.page.getByText('Which chip does your Mac have?'),
+    ).toBeVisible();
+    const choices = mac.page.locator('.smart-download__choices a');
+    await expect(choices).toHaveText([/^Apple silicon/, /^Intel/]);
+    await expect(choices.first()).toHaveAttribute(
+      'href',
+      `${releases}/v2.2.3/Comet-darwin-arm64-2.2.3.zip`,
+    );
+    await expect(choices.last()).toHaveAttribute(
+      'href',
+      `${releases}/v2.2.3/Comet-darwin-x64-2.2.3.zip`,
+    );
+    await mac.page.waitForTimeout(4000);
+    expect(mac.started).toEqual([]);
+    await choices.first().click();
+    await expect
+      .poll(() => mac.started)
+      .toEqual([`${releases}/v2.2.3/Comet-darwin-arm64-2.2.3.zip`]);
+  } finally {
+    await mac.context.close();
+  }
+
+  const linux = await visitor(browser, agents.linux);
+  try {
+    await linux.page.goto('/download/');
+    await expect(
+      linux.page.getByText('Which package suits your system?'),
+    ).toBeVisible();
+    await expect(linux.page.locator('.smart-download__choices a')).toHaveText([
+      /Debian, Ubuntu/,
+      /Fedora, openSUSE/,
+    ]);
+  } finally {
+    await linux.context.close();
+  }
+});
+
+test('phones, deep links and ?auto=0 never start a download', async ({
+  browser,
+}) => {
+  const phone = await visitor(browser, agents.iphone, { width: 390 });
+  try {
+    await phone.page.goto('/download/');
+    await expect(
+      phone.page.getByText('Honeymelon is a desktop app for Mac'),
+    ).toBeVisible();
+    await phone.page.waitForTimeout(4000);
+    expect(phone.started).toEqual([]);
+  } finally {
+    await phone.context.close();
+  }
+
+  for (const route of ['/download/?auto=0', '/download/#all-downloads']) {
+    const pc = await visitor(browser, agents.windows);
+    try {
+      await pc.page.goto(route);
+      await expect(
+        pc.page
+          .locator('.smart-download')
+          .getByRole('link', { name: /^Download Honeymelon 2\.2\.3/ }),
+      ).toBeVisible();
+      await pc.page.waitForTimeout(4000);
+      expect(pc.started, route).toEqual([]);
+    } finally {
+      await pc.context.close();
+    }
+  }
+});
+
+test('every version and platform is one click away, with no forms', async ({
   page,
 }) => {
-  await page.goto('/download/');
-  await page
-    .getByLabel('Operating system', { exact: true })
-    .selectOption('windows');
-  await expect(
-    page.getByLabel('Processor architecture', { exact: true }),
-  ).toHaveValue('');
-  await expect(page.getByRole('link', { name: /^Download v/ })).toHaveCount(0);
-  await page
-    .getByLabel('Processor architecture', { exact: true })
-    .selectOption('arm64');
-  await page.getByLabel('Package format', { exact: true }).selectOption('exe');
-  await expect(
-    page.getByRole('link', { name: /^Download v2.2.3/ }),
-  ).toHaveAttribute(
-    'href',
-    'https://github.com/Thavarshan/honeymelon/releases/download/v2.2.3/comet-2.2.3-arm64-setup.exe',
+  await page.goto('/download/?auto=0');
+  await expect(page.locator('main select, main input, main form')).toHaveCount(
+    0,
   );
-  await page
-    .getByLabel('Release channel', { exact: true })
-    .selectOption('prerelease');
-  await expect(page.getByLabel('Package format', { exact: true })).toHaveValue(
-    '',
-  );
-  await page
-    .getByLabel('Operating system', { exact: true })
-    .selectOption('macos');
-  await page
-    .getByLabel('Processor architecture', { exact: true })
-    .selectOption('arm64');
-  await page.getByLabel('Package format', { exact: true }).selectOption('zip');
+
+  const stable = page.locator('#all-downloads');
+  for (const name of ['Mac', 'Windows', 'Linux']) {
+    await expect(
+      stable.getByRole('heading', { name, exact: true }),
+    ).toBeVisible();
+  }
+
+  await expect(stable.locator('a.package-row')).toHaveCount(8);
+  await expect(page.locator('#beta a.package-row')).toHaveCount(12);
+  for (const link of await page.locator('a.package-row').all()) {
+    expect(await link.getAttribute('href')).toMatch(
+      /^https:\/\/github\.com\/Thavarshan\/honeymelon\/releases\/download\/v[^/]+\/[^/]+$/,
+    );
+  }
+
+  // Older versions expand with the keyboard.
+  const older = page.locator('[id="v2.2.2"]');
+  await older.locator('summary').focus();
+  await page.keyboard.press('Enter');
   await expect(
-    page.getByRole('link', { name: /^Download v3.0.0-beta.1/ }),
-  ).toHaveAttribute(
-    'href',
-    /\/v3\.0\.0-beta\.1\/comet-3\.0\.0-beta\.1-darwin-arm64-/,
-  );
+    older.getByRole('link', { name: /x64\s*Installer/ }),
+  ).toHaveAttribute('href', `${releases}/v2.2.2/comet-2.2.2-x64-setup.exe`);
+});
+
+test('release history links each version to its downloads', async ({
+  page,
+}) => {
   await page.goto('/releases/');
   await expect(
     page.getByRole('heading', { name: 'v2.2.3', exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'v3.0.0-beta.1', exact: true }),
-  ).toHaveCount(0);
-  await page
-    .getByLabel('Release channel', { exact: true })
-    .selectOption('prerelease');
-  await expect(
-    page.getByRole('heading', { name: 'v3.0.0-beta.1', exact: true }),
   ).toBeVisible();
-});
-
-test('Linux package choice and release controls support keyboard navigation', async ({
-  page,
-}) => {
-  await page.goto('/download/');
-  const channel = page.getByLabel('Release channel', { exact: true });
-  await channel.focus();
-  await page.keyboard.press('Tab');
-  await expect(page.getByLabel('Version', { exact: true })).toBeFocused();
   await page
-    .getByLabel('Operating system', { exact: true })
-    .selectOption('linux');
-  await page
-    .getByLabel('Processor architecture', { exact: true })
-    .selectOption('x64');
-  const formats = page.getByLabel('Package format', { exact: true });
-  await expect(formats.locator('option')).toHaveText([
-    'Choose a package',
-    'deb',
-    'rpm',
-  ]);
-  await formats.selectOption('deb');
-  await expect(
-    page.getByRole('link', { name: /^Download v2.2.3/ }),
-  ).toHaveAttribute(
-    'href',
-    'https://github.com/Thavarshan/honeymelon/releases/download/v2.2.3/comet_2.2.3_amd64.deb',
-  );
-  await page
-    .getByLabel('Release channel', { exact: true })
-    .selectOption('prerelease');
-  await page.getByLabel('Version', { exact: true }).selectOption('0.0.1');
-  await page
-    .getByLabel('Operating system', { exact: true })
-    .selectOption('macos');
-  const architecture = page.getByLabel('Processor architecture', {
-    exact: true,
-  });
-  await expect(architecture.locator('option')).toHaveText([
-    'Choose a processor',
-    'Apple Silicon (ARM64)',
-  ]);
-  await expect(architecture).toHaveValue('');
-  await expect(page.getByRole('link', { name: /^Download v/ })).toHaveCount(0);
-  await expect(
-    page.getByRole('link', { name: 'Check this release on GitHub' }),
-  ).toHaveAttribute(
-    'href',
-    'https://github.com/Thavarshan/honeymelon/releases/tag/v0.0.1',
-  );
-});
-
-test('published beta packages remain explicit on mobile for every supported CPU', async ({
-  page,
-}, testInfo) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/download/');
-  await page
-    .getByLabel('Release channel', { exact: true })
-    .selectOption('prerelease');
-  await page
-    .getByLabel('Version', { exact: true })
-    .selectOption('3.0.0-beta.1');
-  for (const os of ['windows', 'macos', 'linux']) {
-    for (const arch of ['x64', 'arm64']) {
-      await page
-        .getByLabel('Operating system', { exact: true })
-        .selectOption(os);
-      await page
-        .getByLabel('Processor architecture', { exact: true })
-        .selectOption(arch);
-      const format = { windows: 'exe', macos: 'zip', linux: 'deb' }[os];
-      if (!format) {
-        throw new Error('Unsupported test OS');
-      }
-
-      await page
-        .getByLabel('Package format', { exact: true })
-        .selectOption(format);
-      const link = page.getByRole('link', { name: /^Download v3.0.0-beta.1/ });
-      await expect(link).toHaveAttribute(
-        'href',
-        new RegExp(
-          `/v3\\.0\\.0-beta\\.1/comet-3\\.0\\.0-beta\\.1-${{ windows: 'win32', macos: 'darwin', linux: 'linux' }[os]}-${arch}-`,
-        ),
-      );
-      await link.focus();
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= window.innerWidth,
-        ),
-      ).toBe(true);
-      await testInfo.attach(`download-${os}-${arch}-390`, {
-        body: await page.screenshot({ fullPage: true }),
-        contentType: 'image/png',
-      });
-    }
-  }
+    .locator('.timeline__entry', {
+      has: page.getByRole('heading', { name: 'v2.2.2', exact: true }),
+    })
+    .getByRole('link', { name: /^Downloads/ })
+    .click();
+  await expect(page).toHaveURL('/download/#v2.2.2');
+  await expect(page.locator('[id="v2.2.2"]')).toHaveAttribute('open', '');
 });
 
 test('mobile navigation traps focus, closes with Escape and follows links', async ({

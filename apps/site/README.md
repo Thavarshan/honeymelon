@@ -29,7 +29,7 @@ running computer to assemble each page.
 | ---------------------------------- | --------------------------------------------------- |
 | `app/layout.tsx`                   | Header, navigation, footer and search metadata      |
 | `app/page.tsx`                     | Home-page story and supported media categories      |
-| `app/download/page.tsx`            | Platform/version selection and trust warnings       |
+| `app/download/page.tsx`            | Automatic download plus every package as a link     |
 | `app/not-found.tsx`                | The friendly page when a URL does not exist         |
 | `src/components/site-header.tsx`   | Sticky navigation and accessible mobile sheet       |
 | `src/components/motion-toggle.tsx` | Pause/resume animation button                       |
@@ -70,15 +70,20 @@ unchanged native matrix.
 
 ## Motion and accessibility
 
-The visual reference is the owner-provided `honeymelon/website` directory. The
-Next.js implementation carries over its shared shadcn default Neutral theme,
-centered hero, generous section spacing, floating screenshots, alternating
-showcases, rounded cards, FAQ and four-column footer. Honeymelon branding, MIT
-licensing, actual desktop screenshots and verified download behavior are
-retained. Old Mac-only, remux, hardware-acceleration and concurrency claims are
-not copied.
+The site follows the idiom of Apple's product pages: large confident type,
+generous space, the product screenshot as the hero, one idea per section,
+alternating light and black bands, and rounded bento tiles. It uses only the
+shared shadcn Neutral tokens; dark bands scope `.dark` to a section so the same
+tokens invert. Secondary text uses a slightly darker grey than
+`muted-foreground` so it passes WCAG AA on grey bands.
 
-- Shared shadcn buttons, badges and dialogs come from `@honeymelon/ui`.
+- Shared shadcn buttons, badges, cards and dialogs come from `@honeymelon/ui`;
+  `app/globals.css` only sizes them for a product page.
+- Element resets sit in `@layer base`, so component colours (for example a
+  Button rendered as a link) are never overridden.
+- Scroll reveals animate `transform` only, never opacity, so text keeps full
+  contrast and nothing shifts layout. Browsers without scroll-driven animations
+  simply show the content.
 - The mobile menu traps focus, supports Escape and restores trigger focus.
 - Native FAQ disclosures work with keyboard input and without JavaScript.
 - Essential navigation is also available in the static footer.
@@ -122,11 +127,13 @@ advertised.
 
 `src/data/releases.json` is the committed GitHub release manifest. The build
 prepares a release snapshot, exports Next.js HTML, then verifies that export.
-`src/lib/releases.ts` validates and normalizes releases, compares versions,
-classifies assets, and detects the visitor's OS. The release centre provides
-version/channel and platform choices; automatic OS selection is a convenience,
-so users can choose a different target explicitly. Downloads go to GitHub
-release assets rather than a media/storage service owned by the site.
+`src/lib/releases.ts` validates and normalizes releases, compares versions, and
+classifies assets. `src/lib/downloads.ts` turns browser signals into a platform
+guess and picks the matching package. `SmartDownload` starts it automatically
+(once per tab, with Cancel) or offers one-click choices when the browser cannot
+know, and `DownloadLibrary` lists every package of every version as a plain
+link. Downloads go to GitHub release assets rather than a media/storage service
+owned by the site.
 
 ```sh
 npm run releases:refresh -w @honeymelon/site

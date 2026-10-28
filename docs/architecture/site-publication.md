@@ -48,11 +48,11 @@ unreleased browser functionality. The getting-started page explains SHA-256
 verification on each desktop platform and preserves source media guidance.
 Release and license pages link the official GitHub release history, repository
 license, source and contribution guide. Release inventory, OS suggestion,
-version/channel history and explicit platform selection are implemented under
-closed issue #71. Release refresh and recovery are documented in
-[Release Center operations](../releases/release-center.md). OS detection does
-not claim CPU architecture; visitors choose x64/ARM64 and package format
-explicitly.
+version/channel history and platform selection are implemented under closed
+issue #71. The download page now starts the matching stable package
+automatically when the browser identifies it exactly, and offers one-click
+choices otherwise; see the platform and trust policy in
+[Release Center operations](../releases/release-center.md).
 
 ## Evidence and budgets
 

@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMetadata(
 export default function GettingStartedPage(): ReactElement {
   return (
     <main id="main-content" className="content-page" tabIndex={-1}>
-      <p className="section-kicker">FIELD GUIDE / 001</p>
+      <p className="eyebrow">Docs</p>
       <h1>Getting started with Honeymelon</h1>
       <p>
         Honeymelon is a local desktop media converter. The browser converter is
