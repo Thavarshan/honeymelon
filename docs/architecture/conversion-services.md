@@ -38,12 +38,20 @@ host-owned preferences, optional platform actions, localization, and styles.
 
 ## Browser ownership
 
-`@honeymelon/browser-engine` currently supplies an explicit unsupported stub for
-contract development. Every advertised output is unavailable with a reason.
-Probing and submission reject with `unsupported`, an already aborted probe
-rejects with `AbortError`, and cancellation of unknown jobs returns `not-found`.
-It creates no jobs, progress events, workers, uploads, or paid services. The
-image implementation remains issue #74; this stub is not an image MVP.
+`BrowserConversionService` extends `QueueConversionService` with a browser
+executor. The host registers selected `File` objects through `intake` and
+receives opaque descriptors; the service resolves them itself and never trusts a
+descriptor's name or size. Each job sniffs the file's bytes against its
+extension, checks size, pixel and duration budgets before decoding, and runs on
+a fresh worker that is terminated on completion, cancel, timeout or crash.
+Outputs are in-memory Blobs with collision-free names (`photo (2).jpg`),
+released by `cleanup`, `removeItem`, `clearMedia` and `dispose`. Capability
+discovery probes the worker's real encoders and verifies their bytes; formats
+the browser cannot produce are unavailable with a reason. See
+[ADR 0003](0003-browser-media-engine.md).
+
+`UnsupportedConversionService` keeps the previous all-unavailable behaviour for
+contract fixtures and hosts that render the UI without conversion.
 
 The package builds declarations and an actual self-contained Vite browser
 library. Browser-externalization warnings fail the build. Repository import

@@ -98,17 +98,19 @@ emits `dist/`.
 
 Pull requests run the shared quality/security gate, six native target builds,
 integration tests, packaged smoke tests, and Linux distribution compatibility
-jobs. They run the Chromium browser harness and static site smoke test as part
-of quality verification. PRs omit only the exhaustive native conversion-pair
-matrix. Pushes to main, scheduled runs, manual CI, and release tags retain the
-exhaustive matrix. Reusable verification defaults to exhaustive so new callers
-cannot accidentally weaken release checks. Signing policy is independent.
+jobs. They run the Chromium browser harness, the static site smoke test, the
+workerd web host contract and the web converter suite in Chromium, Firefox,
+WebKit and a mobile viewport as part of quality verification. PRs omit only the
+exhaustive native conversion-pair matrix. Pushes to main, scheduled runs, manual
+CI, and release tags retain the exhaustive matrix. Reusable verification
+defaults to exhaustive so new callers cannot accidentally weaken release checks.
+Signing policy is independent.
 
-Quality checks run root unit tests, `npm run build:browser`, the browser
-fixture, and static site tests. The static marketing/download site in
-`apps/site` is implemented. No product converter app exists under `apps/web`;
-`@honeymelon/browser-engine` remains an unsupported stub until browser
-conversion work (#74–77) is implemented.
+Quality checks run root unit tests, `npm run build:browser` (which includes
+`apps/web` and its `verify-dist.mjs` gate), the browser fixture, the static site
+and web host contracts, and `npm run test:web`. The web app is a client- only
+Vite build; its worker entry is the `@honeymelon/browser-engine/worker` export,
+bundled by the host.
 
 From a clean checkout using Node.js 24.22.0 (`.nvmrc`) and npm 12.2.0:
 
