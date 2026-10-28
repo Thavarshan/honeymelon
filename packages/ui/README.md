@@ -16,9 +16,9 @@ import { cn } from '@honeymelon/ui/lib/utils';
 ```
 
 Component/helper JavaScript and declarations come from `dist/`; style subpaths
-export source CSS. `src/components/` includes buttons, inputs, selects, dialogs,
-popovers, tabs, tooltips, progress and other reusable primitives. `src/styles/`
-contains base styles, globals and tokens; `src/preset.json` and
+export source CSS. `src/components/` includes buttons, cards, inputs, selects,
+dialogs, popovers, tabs, tooltips, progress and other reusable primitives.
+`src/styles/` contains base styles, globals and tokens; `src/preset.json` and
 `components.json` record the shadcn setup. React and React DOM are peers.
 
 Hosts process `@honeymelon/ui/styles/globals.css` with Tailwind and own document
