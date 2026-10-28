@@ -60,10 +60,14 @@ test('boots without accounts, native bridge or uploads, and passes axe @mobile',
   await expect(page.getByText('never uploaded')).toBeVisible();
   expect(await page.evaluate(() => 'honeymelon' in window)).toBe(false);
   for (const dark of [false, true]) {
-    await page.evaluate(
-      (value) => document.documentElement.classList.toggle('dark', value),
-      dark,
-    );
+    await page.evaluate(async (value) => {
+      document.documentElement.classList.toggle('dark', value);
+      // Colour transitions report their start value until they finish; WebKit
+      // exposes that to axe. Audit the settled theme users actually see.
+      await Promise.all(
+        document.getAnimations().map((animation) => animation.finished),
+      );
+    }, dark);
     const results = await new AxeBuilder({ page }).analyze();
     expect(
       results.violations

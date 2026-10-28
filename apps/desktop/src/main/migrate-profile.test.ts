@@ -1,9 +1,9 @@
 import {
   mkdtemp,
   mkdir,
+  open,
   readdir,
   readFile,
-  stat,
   writeFile,
   rm,
   symlink,
@@ -15,6 +15,19 @@ import { defaultPreferences } from '@honeymelon/contracts';
 import { migrateProfile, legacyProfileNames } from './migrate-profile';
 
 const roots: string[] = [];
+
+/** Read bytes and mtime through one handle, so the check has no race. */
+async function snapshot(file: string) {
+  const handle = await open(file, 'r');
+  try {
+    return {
+      text: await handle.readFile('utf8'),
+      mtimeMs: (await handle.stat()).mtimeMs,
+    };
+  } finally {
+    await handle.close();
+  }
+}
 
 async function fixture() {
   const root = await mkdtemp(path.join(tmpdir(), 'honeymelon-migration-'));
@@ -116,12 +129,21 @@ it('falls back past an invalid profile and leaves no staging residue', async () 
   const { root, source, destination } = await fixture();
   const invalid = path.join(source, 'preferences-v1.json');
   await writeFile(invalid, '{broken');
-  const before = await stat(invalid);
+  const before = await snapshot(invalid);
   const lowercase = path.join(root, legacyProfileNames[1]);
-  // Case-insensitive file systems resolve both legacy names to one directory.
-  const distinct = !(await stat(lowercase).catch(() => undefined));
+  // Case-insensitive file systems resolve both legacy names to one directory,
+  // so creating the lowercase one fails there with EEXIST.
+  const distinct = await mkdir(lowercase).then(
+    () => true,
+    (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+
+      return false;
+    },
+  );
   if (distinct) {
-    await mkdir(lowercase);
     const valid = JSON.stringify({
       ...defaultPreferences(tmpdir()),
       locale: 'de',
@@ -135,8 +157,8 @@ it('falls back past an invalid profile and leaves no staging residue', async () 
     expect(await migrateProfile(root, destination)).toBe('absent');
   }
 
-  expect(await readFile(invalid, 'utf8')).toBe('{broken');
-  expect((await stat(invalid)).mtimeMs).toBe(before.mtimeMs);
+  expect(await snapshot(invalid)).toEqual(before);
+  expect(before.text).toBe('{broken');
   const residue = (await readdir(destination).catch(() => [])).filter((name) =>
     name.startsWith('.import-'),
   );

@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
 // A waiting version activates only when the user chooses to reload, so a
 // running conversion never loses the worker chunk it was started with.
 self.addEventListener('message', (event) => {
-  if (event.data === 'skip-waiting') {
+  if (event.origin === self.location.origin && event.data === 'skip-waiting') {
     self.skipWaiting();
   }
 });
