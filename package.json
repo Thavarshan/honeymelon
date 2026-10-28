@@ -70,5 +70,8 @@
   "allowScripts": {
     "electron-winstaller": false,
     "fsevents": false
+  },
+  "overrides": {
+    "zod": "4.6.7"
   }
 }
