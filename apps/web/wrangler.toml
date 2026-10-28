@@ -1,0 +1,31 @@
+# Static assets only: conversion runs in the visitor's browser. There is no
+# Worker script, upload endpoint, storage binding or billable compute.
+name = "honeymelon-web-local"
+compatibility_date = "2026-10-16"
+workers_dev = false
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
+html_handling = "auto-trailing-slash"
+run_worker_first = false
+
+[env.preview]
+name = "honeymelon-web-preview"
+workers_dev = true
+
+[env.preview.assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
+html_handling = "auto-trailing-slash"
+run_worker_first = false
+
+[env.production]
+name = "honeymelon-web"
+workers_dev = true
+
+[env.production.assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
+html_handling = "auto-trailing-slash"
+run_worker_first = false

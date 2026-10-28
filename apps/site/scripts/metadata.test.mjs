@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
   getSiteOrigin,
+  getWebAppUrl,
   pageMetadata,
   publicRoutes,
 } from '../src/lib/metadata.ts';
@@ -62,5 +63,22 @@ test('every real route has its own canonical and matching social metadata', () =
     } else {
       process.env.HONEYMELON_SITE_URL = previous;
     }
+  }
+});
+
+test('the web app is linked only when a deployed HTTPS origin is configured', () => {
+  assert.equal(getWebAppUrl(''), undefined);
+  assert.equal(getWebAppUrl(undefined), undefined);
+  assert.equal(
+    getWebAppUrl('https://honeymelon-web.example.workers.dev').href,
+    'https://honeymelon-web.example.workers.dev/',
+  );
+  for (const value of [
+    'http://honeymelon-web.example',
+    'https://honeymelon-web.example/app',
+    'https://user@honeymelon-web.example',
+    'https://honeymelon-web.example/?ref=site',
+  ]) {
+    assert.throws(() => getWebAppUrl(value), /HONEYMELON_WEB_URL/);
   }
 });

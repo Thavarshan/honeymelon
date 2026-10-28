@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="title">
+  <title id="title">Honeymelon</title>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="#fafafa"/>
+  <g transform="rotate(-28 32 32)" fill="none" stroke="#171717" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 28c0 17 8 26 22 26s22-9 22-26"/>
+    <ellipse cx="32" cy="27" rx="22" ry="15" fill="#fafafa"/>
+    <ellipse cx="32" cy="27" rx="14" ry="8"/>
+    <path d="m27 25 2 2m7-3-2 3m-3 5 2-2"/>
+  </g>
+</svg>

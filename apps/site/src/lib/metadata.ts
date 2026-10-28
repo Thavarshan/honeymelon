@@ -47,6 +47,35 @@ export function getSiteOrigin(
 }
 
 /**
+ * The deployed Honeymelon Web origin, if one has been published. Links and
+ * browser privacy statements render only when this is configured, so the
+ * site never advertises an app that is not live.
+ */
+export function getWebAppUrl(
+  value: string | undefined = process.env.HONEYMELON_WEB_URL,
+): URL | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const url = new URL(value);
+  if (
+    url.protocol !== 'https:' ||
+    url.username ||
+    url.password ||
+    url.pathname !== '/' ||
+    url.search ||
+    url.hash
+  ) {
+    throw new Error(
+      'HONEYMELON_WEB_URL must be an HTTPS origin without a path.',
+    );
+  }
+
+  return url;
+}
+
+/**
  * Keep page titles, descriptions and social previews in agreement.
  * This runs at build time; visitors do not make API calls for metadata.
  */

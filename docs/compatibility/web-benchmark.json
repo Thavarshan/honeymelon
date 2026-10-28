@@ -1,0 +1,260 @@
+{
+  "measuredAt": "2026-10-28T19:08:47.237Z",
+  "webVersion": "0.1.0",
+  "playwright": "1.64.1",
+  "host": {
+    "platform": "linux 6.18.33.1-microsoft-standard-WSL2",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "cores": 12,
+    "memoryGiB": 8
+  },
+  "thresholds": {
+    "startupMs": 5000,
+    "image-12mp-jpg": 8000,
+    "image-12mp-png": 15000,
+    "audio-60s-wav": 6000,
+    "video-frame-png": 6000
+  },
+  "runs": [
+    {
+      "engine": "chromium",
+      "version": "156.0.8078.4",
+      "results": {
+        "startupMs": {
+          "ms": 196,
+          "status": "ok"
+        },
+        "image-1mp-jpg": {
+          "ms": 147,
+          "status": "ok"
+        },
+        "image-1mp-png": {
+          "ms": 173,
+          "status": "ok"
+        },
+        "image-1mp-webp": {
+          "ms": 277,
+          "status": "ok"
+        },
+        "image-1mp-avif": {
+          "status": "unavailable"
+        },
+        "image-12mp-jpg": {
+          "ms": 889,
+          "status": "ok"
+        },
+        "image-12mp-png": {
+          "ms": 267,
+          "status": "ok"
+        },
+        "image-12mp-webp": {
+          "ms": 1371,
+          "status": "ok"
+        },
+        "image-12mp-avif": {
+          "status": "unavailable"
+        },
+        "image-24mp-jpg": {
+          "ms": 859,
+          "status": "ok"
+        },
+        "image-24mp-png": {
+          "ms": 865,
+          "status": "ok"
+        },
+        "image-24mp-webp": {
+          "ms": 2394,
+          "status": "ok"
+        },
+        "image-24mp-avif": {
+          "status": "unavailable"
+        },
+        "image-48mp-jpg": {
+          "ms": 1358,
+          "status": "ok"
+        },
+        "image-48mp-png": {
+          "ms": 851,
+          "status": "ok"
+        },
+        "image-48mp-webp": {
+          "ms": 11925,
+          "status": "ok"
+        },
+        "image-48mp-avif": {
+          "status": "unavailable"
+        },
+        "audio-60s-wav": {
+          "ms": 251,
+          "status": "ok"
+        },
+        "audio-600s-wav": {
+          "ms": 1350,
+          "status": "ok"
+        },
+        "audio-decode-tone.mp3": {
+          "ms": 126,
+          "status": "ok"
+        },
+        "audio-decode-tone.flac": {
+          "ms": 129,
+          "status": "ok"
+        },
+        "audio-decode-tone.ogg": {
+          "ms": 86,
+          "status": "ok"
+        },
+        "video-audio-wav": {
+          "ms": 161,
+          "status": "ok"
+        },
+        "video-frame-png": {
+          "ms": 145,
+          "status": "ok"
+        }
+      },
+      "deviceMemory": 8,
+      "crossOriginIsolated": false,
+      "offscreenCanvas": true,
+      "webAssembly": true,
+      "sharedArrayBuffer": false,
+      "capabilities": {
+        "image": {
+          "jpg": true,
+          "png": true,
+          "webp": true,
+          "avif": false,
+          "gif": false,
+          "bmp": false,
+          "tiff": false
+        },
+        "audio": {
+          "wav": true,
+          "mp3": false,
+          "flac": false,
+          "opus": false
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "157.0",
+      "results": {
+        "startupMs": {
+          "ms": 434,
+          "status": "ok"
+        },
+        "image-1mp-jpg": {
+          "ms": 180,
+          "status": "ok"
+        },
+        "image-1mp-png": {
+          "ms": 192,
+          "status": "ok"
+        },
+        "image-1mp-webp": {
+          "ms": 273,
+          "status": "ok"
+        },
+        "image-1mp-avif": {
+          "status": "unavailable"
+        },
+        "image-12mp-jpg": {
+          "ms": 418,
+          "status": "ok"
+        },
+        "image-12mp-png": {
+          "ms": 304,
+          "status": "ok"
+        },
+        "image-12mp-webp": {
+          "ms": 1442,
+          "status": "ok"
+        },
+        "image-12mp-avif": {
+          "status": "unavailable"
+        },
+        "image-24mp-jpg": {
+          "ms": 960,
+          "status": "ok"
+        },
+        "image-24mp-png": {
+          "ms": 543,
+          "status": "ok"
+        },
+        "image-24mp-webp": {
+          "ms": 2569,
+          "status": "ok"
+        },
+        "image-24mp-avif": {
+          "status": "unavailable"
+        },
+        "image-48mp-jpg": {
+          "ms": 2007,
+          "status": "ok"
+        },
+        "image-48mp-png": {
+          "ms": 938,
+          "status": "ok"
+        },
+        "image-48mp-webp": {
+          "ms": 11264,
+          "status": "ok"
+        },
+        "image-48mp-avif": {
+          "status": "unavailable"
+        },
+        "audio-60s-wav": {
+          "ms": 1402,
+          "status": "ok"
+        },
+        "audio-600s-wav": {
+          "ms": 9116,
+          "status": "ok"
+        },
+        "audio-decode-tone.mp3": {
+          "ms": 169,
+          "status": "ok"
+        },
+        "audio-decode-tone.flac": {
+          "ms": 172,
+          "status": "ok"
+        },
+        "audio-decode-tone.ogg": {
+          "ms": 163,
+          "status": "ok"
+        },
+        "video-audio-wav": {
+          "ms": 161,
+          "status": "ok"
+        },
+        "video-frame-png": {
+          "ms": 180,
+          "status": "ok"
+        }
+      },
+      "deviceMemory": null,
+      "crossOriginIsolated": false,
+      "offscreenCanvas": true,
+      "webAssembly": true,
+      "sharedArrayBuffer": false,
+      "capabilities": {
+        "image": {
+          "jpg": true,
+          "png": true,
+          "webp": true,
+          "avif": false,
+          "gif": false,
+          "bmp": false,
+          "tiff": false
+        },
+        "audio": {
+          "wav": true,
+          "mp3": false,
+          "flac": false,
+          "opus": false
+        }
+      }
+    }
+  ]
+}

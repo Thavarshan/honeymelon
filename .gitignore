@@ -98,6 +98,7 @@ temp
 # Workspace output and native resources
 dist/
 .turbo/
+.wrangler/
 playwright-report/
 test-results/
 *.pfx

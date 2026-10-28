@@ -40,7 +40,8 @@
     "test:site": "turbo run test:site --filter=@honeymelon/e2e --",
     "test:browser": "turbo run test:browser --filter=@honeymelon/e2e --",
     "brand:assets": "node scripts/generate-brand-assets.mjs",
-    "brand:screenshots": "node scripts/capture-brand-screenshots.mjs"
+    "brand:screenshots": "node scripts/capture-brand-screenshots.mjs",
+    "test:web": "turbo run test:web --filter=@honeymelon/e2e --"
   },
   "devDependencies": {
     "@electron/asar": "4.3.1",

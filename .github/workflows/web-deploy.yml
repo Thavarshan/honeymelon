@@ -1,0 +1,150 @@
+name: Deploy web app
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options: [preview, production]
+        default: preview
+        required: true
+      operation:
+        type: choice
+        options: [deploy, rollback]
+        default: deploy
+        required: true
+      version_id:
+        description: Explicit Cloudflare version UUID for rollback
+        type: string
+permissions:
+  contents: read
+  checks: read
+concurrency:
+  group: web-${{ inputs.environment }}
+  cancel-in-progress: false
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+  WRANGLER_SEND_METRICS: 'false'
+jobs:
+  admission:
+    if:
+      github.repository == 'Thavarshan/honeymelon' && github.ref ==
+      'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      target: ${{ steps.policy.outputs.target }}
+      app_url: ${{ steps.policy.outputs.app_url }}
+      version: ${{ steps.policy.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Require reviewed main commit and exact public destinations
+        id: policy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_TARGET: ${{ inputs.environment }}
+          DEPLOY_OPERATION: ${{ inputs.operation }}
+          DEPLOY_VERSION: ${{ inputs.version_id }}
+          PRODUCTION_URL: ${{ vars.HONEYMELON_WEB_PRODUCTION_URL }}
+          PREVIEW_URL: ${{ vars.HONEYMELON_WEB_PREVIEW_URL }}
+        run: node apps/web/scripts/deployment-policy.mjs
+  build:
+    needs: admission
+    if: inputs.operation == 'deploy'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      DEPLOY_TARGET: ${{ needs.admission.outputs.target }}
+      HONEYMELON_SITE_URL: ${{ vars.HONEYMELON_SITE_PRODUCTION_URL }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm install -g npm@12.2.0
+      - run: npm ci
+      - run: npm run build:packages
+      - run: npm run build -w @honeymelon/web
+      - run: npm run test -w @honeymelon/web
+      - name: Prepare the verified static artifact
+        run:
+          node apps/web/scripts/prepare-deployment.mjs "$DEPLOY_TARGET"
+          "$GITHUB_SHA"
+      - name: Validate assets-only Wrangler deployment
+        run:
+          npm exec -w @honeymelon/web -- wrangler deploy --env "$DEPLOY_TARGET"
+          --dry-run
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: web-${{ inputs.environment }}-${{ github.sha }}
+          path: apps/web/dist
+          retention-days: 14
+  publish:
+    needs: [admission, build]
+    if:
+      always() && needs.admission.result == 'success' && (needs.build.result ==
+      'success' || inputs.operation == 'rollback')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: web-${{ needs.admission.outputs.target }}
+      url: ${{ needs.admission.outputs.app_url }}
+    env:
+      DEPLOY_TARGET: ${{ needs.admission.outputs.target }}
+      DEPLOY_OPERATION: ${{ inputs.operation }}
+      DEPLOY_VERSION: ${{ needs.admission.outputs.version }}
+      APP_URL: ${{ needs.admission.outputs.app_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm install -g npm@12.2.0
+      - run: npm ci
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        if: inputs.operation == 'deploy'
+        with:
+          name: web-${{ inputs.environment }}-${{ github.sha }}
+          path: apps/web/dist
+      - name: Publish or roll back the selected static Worker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Configure CLOUDFLARE_ACCOUNT_ID'; exit 1; }
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Configure the environment CLOUDFLARE_API_TOKEN secret'; exit 1; }
+          if [ "$DEPLOY_OPERATION" = rollback ]; then
+            npm exec -w @honeymelon/web -- wrangler rollback "$DEPLOY_VERSION" --env "$DEPLOY_TARGET" --yes
+          else
+            npm exec -w @honeymelon/web -- wrangler deploy --env "$DEPLOY_TARGET"
+          fi
+      - name: Verify the live deployment
+        run: |
+          revision="$GITHUB_SHA"
+          if [ "$DEPLOY_OPERATION" = rollback ]; then revision=''; fi
+          node apps/web/scripts/verify-deployment.mjs "$APP_URL" "$DEPLOY_TARGET" "$revision"
+  smoke:
+    needs: [admission, publish]
+    if: inputs.operation == 'deploy'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm install -g npm@12.2.0
+      - run: npm ci
+      - run:
+          npm exec -w @honeymelon/e2e -- playwright install --with-deps chromium
+      - name: Convert real files on the live app with uploads blocked
+        env:
+          HONEYMELON_E2E_APP_URL: ${{ needs.admission.outputs.app_url }}
+        run:
+          npm run test:web -w @honeymelon/e2e -- --project=web-chromium
+          tests/web/converter.spec.ts
