@@ -1,9 +1,10 @@
 # @honeymelon/desktop
 
 The Electron desktop application for local video, audio, and image conversion.
-Its package version is `3.0.0-beta.1`; that beta is explicitly permitted to ship
-unsigned. Signing requirements for other versions are enforced by release
-policy.
+Its package version is `3.0.0-beta.2`. Only the published `3.0.0-beta.1` was
+permitted to ship unsigned; release policy requires macOS and Windows signatures
+for every other version. Identity and migration acceptance is tracked in the
+[desktop identity test matrix](../../docs/releases/desktop-identity-test-matrix.md).
 
 ## Responsibilities and integration
 

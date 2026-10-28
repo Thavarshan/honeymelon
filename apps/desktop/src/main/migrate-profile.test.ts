@@ -1,7 +1,9 @@
 import {
   mkdtemp,
   mkdir,
+  readdir,
   readFile,
+  stat,
   writeFile,
   rm,
   symlink,
@@ -108,4 +110,38 @@ it('concurrent imports publish once without replacing newer settings', async () 
   expect(
     await readFile(path.join(destination, 'preferences-v1.json'), 'utf8'),
   ).toBe(original);
+});
+
+it('falls back past an invalid profile and leaves no staging residue', async () => {
+  const { root, source, destination } = await fixture();
+  const invalid = path.join(source, 'preferences-v1.json');
+  await writeFile(invalid, '{broken');
+  const before = await stat(invalid);
+  const lowercase = path.join(root, legacyProfileNames[1]);
+  // Case-insensitive file systems resolve both legacy names to one directory.
+  const distinct = !(await stat(lowercase).catch(() => undefined));
+  if (distinct) {
+    await mkdir(lowercase);
+    const valid = JSON.stringify({
+      ...defaultPreferences(tmpdir()),
+      locale: 'de',
+    });
+    await writeFile(path.join(lowercase, 'preferences-v1.json'), valid);
+    expect(await migrateProfile(root, destination)).toBe('imported');
+    expect(
+      await readFile(path.join(destination, 'preferences-v1.json'), 'utf8'),
+    ).toBe(valid);
+  } else {
+    expect(await migrateProfile(root, destination)).toBe('absent');
+  }
+
+  expect(await readFile(invalid, 'utf8')).toBe('{broken');
+  expect((await stat(invalid)).mtimeMs).toBe(before.mtimeMs);
+  const residue = (await readdir(destination).catch(() => [])).filter((name) =>
+    name.startsWith('.import-'),
+  );
+  expect(residue).toEqual([]);
+  expect(await migrateProfile(root, destination)).toBe(
+    distinct ? 'existing' : 'absent',
+  );
 });

@@ -1,6 +1,10 @@
 # Support Questions
 
-GitHub issue trackers are not intended to provide Sentinel help or support.
-Instead, use one of the following channels:
+Honeymelon has no account-based or paid support. Ask questions and report
+problems in [GitHub issues](https://github.com/Thavarshan/honeymelon/issues); a
+free GitHub account is the only account needed. Include your Honeymelon version,
+operating system, CPU architecture (x64 or ARM64), how you installed it, and
+whether Comet is also installed.
 
-- [Github discussions](https://github.com/Thavarshan/honeymelon/discussions)
+Report security vulnerabilities privately as described in
+[SECURITY.md](SECURITY.md), not in a public issue.

@@ -3,10 +3,10 @@
 The Release Center delivered under closed issue #71 serves a checked JSON
 snapshot in the static site export. Site deployment to Cloudflare remains a
 separate open milestone (#72). Visitors never call GitHub's API, upload media,
-or receive an API token. `@comet/contracts` owns the public types; `@comet/ui`
-supplies buttons, badges and the native select shared across the monorepo. Turbo
-builds these packages before the site and runs the site tests through the
-existing verification jobs.
+or receive an API token. `@honeymelon/contracts` owns the public types;
+`@honeymelon/ui` supplies buttons, badges and the native select shared across
+the monorepo. Turbo builds these packages before the site and runs the site
+tests through the existing verification jobs.
 
 ## Refresh and recovery
 
@@ -57,7 +57,7 @@ Notes render as inert text, never untrusted HTML.
 
 ## Verification
 
-Run `npm run test -w @comet/site`, `npm run build:browser`,
+Run `npm run test -w @honeymelon/site`, `npm run build:browser`,
 `npm run test:site -- --project=site-chromium`, `npm run lint`, and
 `npm run typecheck`. Unit tests exercise filenames, semver, trust validation,
 rate limits, offline recovery, first-run fallback, redirect restrictions and
