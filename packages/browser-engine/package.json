@@ -1,12 +1,16 @@
 {
   "name": "@honeymelon/browser-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./worker": {
+      "types": "./dist/media-worker.d.ts",
+      "default": "./dist/media-worker.js"
     }
   },
   "scripts": {

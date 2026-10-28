@@ -9,7 +9,7 @@ import {
   type ConverterPlatform,
   type ConverterPreferences,
 } from '@honeymelon/converter';
-import { BrowserConversionService } from '@honeymelon/browser-engine';
+import { UnsupportedConversionService } from '@honeymelon/browser-engine';
 import './style.css';
 
 const i18n = createInstance();
@@ -25,7 +25,7 @@ await i18n.use(initReactI18next).init({
     ]),
   ),
 });
-const service = new BrowserConversionService();
+const service = new UnsupportedConversionService();
 const platform: ConverterPlatform = {
   service,
   mediaTypes: ['image'],
