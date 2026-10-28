@@ -68,9 +68,12 @@ test('boots without accounts, native bridge or uploads, and passes axe @mobile',
     expect(
       results.violations
         .filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))
-        .map(
-          (item) =>
-            `${item.id}: ${item.nodes.map((node) => node.target).join(', ')}`,
+        .flatMap((item) =>
+          item.nodes.map(
+            (node) =>
+              // Measured colours make engine-specific failures diagnosable.
+              `${dark ? 'dark' : 'light'} ${item.id}: ${node.target.join(' ')} ${JSON.stringify(node.any[0]?.data ?? null)}`,
+          ),
         ),
     ).toEqual([]);
   }
