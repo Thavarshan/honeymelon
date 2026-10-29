@@ -88,6 +88,19 @@ documentation. Before contributing code, please read the following guidelines:
    npm run test:integration
    ```
 
+   For browser or web app changes, also run the browser suites (install the
+   engines once with
+   `npm exec -w @honeymelon/e2e -- playwright install chromium firefox webkit`):
+
+   ```bash
+   npm run test:web
+   bash scripts/ci/web-static-host.sh
+   ```
+
+   Codec or format changes must update `docs/web/capability-matrix.md` with a
+   fresh `node packages/e2e/scripts/benchmark-web.mjs` run, and must never offer
+   a format the browser has not been shown to produce.
+
 #### Step 3: Commit Your Changes
 
 1. **Commit**: Once you’re happy with your changes, commit them with a

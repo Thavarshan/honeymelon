@@ -78,5 +78,5 @@ npm run dev -w @honeymelon/core
 Import the public API from `@honeymelon/core`; TypeScript emits JavaScript and
 declarations to `dist/`, and `dev` watches those outputs. The only workspace
 dependency is contracts. Keep this package browser-safe: no Node, Electron,
-React, filesystem handles, or media bytes. The browser adapter is currently an
-unsupported stub, even though shared scheduling contracts are implemented.
+React, filesystem handles, or media bytes. `@honeymelon/browser-engine` runs
+real browser conversion on `QueueConversionService` with its own executor.

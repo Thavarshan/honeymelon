@@ -14,7 +14,7 @@ import {
   type ConversionService,
   type QueueExecutor,
 } from '@honeymelon/core';
-import { BrowserConversionService } from '@honeymelon/browser-engine';
+import { UnsupportedConversionService } from '@honeymelon/browser-engine';
 import type { Capabilities } from '@honeymelon/contracts';
 
 const capabilities: Capabilities = {
@@ -271,8 +271,8 @@ for (const kind of ['native', 'portable'] as const) {
   });
 }
 
-it('keeps the browser stub explicitly unavailable until its real adapter ships', async () => {
-  const service: ConversionService = new BrowserConversionService();
+it('keeps the unsupported browser stub explicitly unavailable', async () => {
+  const service: ConversionService = new UnsupportedConversionService();
   expect(
     Object.values(await service.discoverCapabilities())
       .flat()

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { pageMetadata } from '../../src/lib/metadata';
+import { getWebAppUrl, pageMetadata } from '../../src/lib/metadata';
 import type { ReactElement } from 'react';
 
 export const metadata: Metadata = pageMetadata(
@@ -13,6 +13,8 @@ export const metadata: Metadata = pageMetadata(
  * Avoid promises about third-party hosting logs or external destinations.
  */
 export default function PrivacyPage(): ReactElement {
+  const webApp = getWebAppUrl();
+
   return (
     <main id="main-content" className="content-page" tabIndex={-1}>
       <p className="section-kicker">TRANSPARENCY / 002</p>
@@ -42,10 +44,33 @@ export default function PrivacyPage(): ReactElement {
         quality. Keep backup copies of important files. The 3.0 beta installers
         are unsigned; verify official release checksums before use.
       </p>
-      <p>
-        Honeymelon Web is not publicly available yet. Any future browser feature
-        needs separate verification before its privacy claims are published.
-      </p>
+      {webApp ? (
+        <>
+          <h2>Honeymelon Web (beta)</h2>
+          <p>
+            <a href={webApp.href}>Honeymelon Web</a> converts files inside your
+            browser tab. Selected files, decoded media and converted results
+            stay in that tab&apos;s memory; they are not uploaded, logged or
+            written to browser storage, and closing the tab discards them. The
+            app has no account, analytics or conversion server, and its security
+            policy only allows requests to its own origin.
+          </p>
+          <p>
+            Your language, theme and output settings are saved in this
+            browser&apos;s local storage. The offline cache holds the app&apos;s
+            own files only. As with any website, the host may process request
+            information such as IP addresses. Browser conversion supports fewer
+            formats and smaller files than desktop; see the published limits
+            before relying on it.
+          </p>
+        </>
+      ) : (
+        <p>
+          Honeymelon Web is not publicly available yet. Any future browser
+          feature needs separate verification before its privacy claims are
+          published.
+        </p>
+      )}
       <p>
         <a href="https://github.com/Thavarshan/honeymelon/issues">
           Ask a question or report an issue

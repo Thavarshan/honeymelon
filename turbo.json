@@ -19,7 +19,7 @@
         "!.next/cache/**",
         "out/**"
       ],
-      "env": ["HONEYMELON_SITE_URL"]
+      "env": ["HONEYMELON_SITE_URL", "HONEYMELON_WEB_URL"]
     },
     "typecheck": {
       "dependsOn": ["^build"],
@@ -58,6 +58,11 @@
     "test:browser": {
       "cache": false,
       "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test:web": {
+      "cache": false,
+      "dependsOn": ["^build", "@honeymelon/web#build"],
       "outputs": []
     }
   },

@@ -72,11 +72,20 @@ OS/architecture.
 
 ## Browser harness and static site
 
-There is no product web converter app yet. A real browser fixture mounts
-`@honeymelon/converter` over the explicitly unsupported
-`BrowserConversionService`. It tests unavailable capabilities, intake/UI
-behavior, and request boundaries; it does not claim to encode or download
-converted media.
+A real browser fixture mounts `@honeymelon/converter` over
+`UnsupportedConversionService`. It tests unavailable capabilities, intake/UI
+behavior, and request boundaries without encoding anything.
+
+The web converter suite (`tests/web`, `npm run test:web`) drives the production
+build of `apps/web` through `vite preview` in Chromium, Firefox, WebKit and a
+Pixel 7 viewport. It converts real fixtures (PNG/JPEG images, MP3/FLAC/Ogg tones
+and a VP9/Opus WebM generated with the staged FFmpeg), downloads and inspects
+outputs, cancels and retries, runs axe in light and dark mode, completes a
+keyboard-only workflow, starts offline, and applies a service worker update.
+Every request that leaves the origin or carries a body fails the test. Set
+`HONEYMELON_E2E_APP_URL` to run it against a deployed app.
+`scripts/benchmark-web.mjs` records the
+[capability matrix](../../docs/web/capability-matrix.md).
 
 ```sh
 npm run build:packages

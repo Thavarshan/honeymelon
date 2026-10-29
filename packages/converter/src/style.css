@@ -37,6 +37,11 @@
   font-size: 13px;
   gap: 8px;
 }
+/* Muted-foreground on the muted track is about 4:1 in dark mode; WCAG AA
+   needs 4.5:1 for this text size. */
+.dark .tab:not([data-state='active']) {
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+}
 .tab-count {
   border-radius: var(--radius-sm, calc(var(--radius) * 0.6));
   padding: 0 4px;

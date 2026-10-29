@@ -33,7 +33,7 @@ jobs:
     uses: ./.github/workflows/security.yml
   quality:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -53,13 +53,18 @@ jobs:
       - run: npm run build:browser
       - name: Cloudflare static host contract
         run: bash scripts/ci/site-static-host.sh
-      - name: Install browser contract test runtime
+      - name: Cloudflare static web app contract
+        run: bash scripts/ci/web-static-host.sh
+      - name: Install browser test runtimes
         run:
           npm exec -w @honeymelon/e2e -- playwright install --with-deps chromium
+          firefox webkit
       - name: Shared browser conversion harness
         run: npm run test:browser -- --project=chromium
       - name: Marketing site responsive smoke test
         run: npm run test:site -- --project=site-chromium
+      - name: Web converter end-to-end (Chromium, Firefox, WebKit, mobile)
+        run: npm run test:web
       - name: Retain browser audit evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -70,6 +75,8 @@ jobs:
             packages/e2e/test-results/browser
             packages/e2e/playwright-report/site
             packages/e2e/test-results/site
+            packages/e2e/playwright-report/web
+            packages/e2e/test-results/web
           retention-days: 7
       - name: Production dependency vulnerability gate
         run: npm audit --omit=dev --audit-level=high

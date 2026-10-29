@@ -19,7 +19,12 @@ const navigation = [
 ] as const;
 
 /** Match the reference's quiet sticky header and accessible mobile sheet. */
-export function SiteHeader(): ReactElement {
+export function SiteHeader({
+  webAppUrl,
+}: {
+  /** Present only when Honeymelon Web is deployed. */
+  readonly webAppUrl?: string | undefined;
+}): ReactElement {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -45,6 +50,11 @@ export function SiteHeader(): ReactElement {
               <a href={link.href}>{link.label}</a>
             </Button>
           ))}
+          {webAppUrl ? (
+            <Button asChild variant="ghost" size="sm">
+              <a href={webAppUrl}>Web app (beta)</a>
+            </Button>
+          ) : null}
           <Button asChild variant="outline" className="github-button" size="sm">
             <a href="https://github.com/Thavarshan/honeymelon">
               <Star aria-hidden="true" /> Star on GitHub
@@ -72,6 +82,11 @@ export function SiteHeader(): ReactElement {
                     <a href={link.href}>{link.label}</a>
                   </DialogClose>
                 ))}
+                {webAppUrl ? (
+                  <DialogClose asChild>
+                    <a href={webAppUrl}>Web app (beta)</a>
+                  </DialogClose>
+                ) : null}
                 <DialogClose asChild>
                   <a href="/download/" className="site-button">
                     Download

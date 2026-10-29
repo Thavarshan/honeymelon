@@ -119,11 +119,12 @@ Packaging and native tools must target the same architecture.
 | Workspace                                           | Current responsibility                                                |
 | --------------------------------------------------- | --------------------------------------------------------------------- |
 | [Desktop](apps/desktop/README.md)                   | Electron app, native integration, renderer shell and packaging        |
+| [Web](apps/web/README.md)                           | Browser converter (beta): local conversion, PWA, static deployment    |
 | [Site](apps/site/README.md)                         | Static marketing site, release/download centre and deployment tooling |
 | [Contracts](packages/contracts/README.md)           | Validation, shared DTOs and release types                             |
 | [Core](packages/core/README.md)                     | Portable lifecycle rules, service ports and executor-driven queue     |
 | [Engine](packages/engine/README.md)                 | Native processes/workers and conversion execution                     |
-| [Browser engine](packages/browser-engine/README.md) | Explicit unsupported service stub; no working browser encoding yet    |
+| [Browser engine](packages/browser-engine/README.md) | In-browser image, audio and frame conversion in workers; no uploads   |
 | [Converter](packages/converter/README.md)           | Shared React conversion workspace and host contract                   |
 | [UI](packages/ui/README.md)                         | Shared primitives, tokens, styles and component gallery               |
 | [E2E](packages/e2e/README.md)                       | Native matrix, desktop/browser harness and static site tests          |

@@ -67,6 +67,7 @@ export function FormatPicker({
                     setOpen(false);
                   }}
                   disabled={!option.available}
+                  {...(option.reason ? { title: option.reason } : {})}
                 >
                   <Check
                     size={14}

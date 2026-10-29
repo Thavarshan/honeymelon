@@ -5,6 +5,34 @@ the names and versions under which they were published.
 
 # Release Notes
 
+## Unreleased
+
+### Added
+
+- Honeymelon Web (beta), `apps/web`: the shared converter running entirely in
+  the browser. Images to JPEG/PNG (WebP/AVIF where the browser encodes them),
+  audio and video audio tracks to WAV, and still frames from video, with
+  per-job workers, resource limits, cancellation, Download all (ZIP), five
+  languages, light/dark themes, offline use and an opt-in update prompt. No
+  uploads, accounts or analytics. See `docs/web/README.md`.
+- A working `@honeymelon/browser-engine`: byte sniffing, header-only size
+  checks, animated-image refusal, verified encoder discovery and a WAV writer.
+- Web E2E suite across Chromium, Firefox, WebKit and a phone viewport, a
+  benchmark and capability matrix, a workerd host contract and a guarded
+  deploy/rollback workflow for the web app.
+- Rebrand release gates: desktop identity tests, a release checklist, a
+  rollback runbook, a name decision record and a transition guide.
+
+### Changed
+
+- The site links to Honeymelon Web and describes its privacy only once
+  `HONEYMELON_WEB_PRODUCTION_URL` is configured.
+- Unavailable formats show the reason as a tooltip.
+
+### Fixed
+
+- Inactive media tabs now meet WCAG AA contrast in dark mode (desktop and web).
+
 ## v3.0.0-beta.1 — Release candidate preparation — 2026-10-17
 
 This beta is not approved for production distribution. The public stable release

@@ -1,92 +1,21 @@
-import {
-  formats,
-  type Capabilities,
-  type CancelResult,
-} from '@honeymelon/contracts';
-import {
-  ConversionServiceError,
-  type ConversionQueue,
-  type ConversionRequest,
-  type ConversionService,
-  type InputFile,
-} from '@honeymelon/core';
-import type { MediaMetadata } from '@honeymelon/contracts';
+export {
+  BrowserConversionService,
+  type BrowserEngineOptions,
+} from './service.js';
 
-/**
- * Explicit placeholder until the measured image adapter is implemented.
- * Never advertises a format or silently uploads media for conversion.
- */
-export class BrowserConversionService implements ConversionService {
-  private disposed = false;
+export { UnsupportedConversionService } from './unsupported.js';
 
-  async discoverCapabilities(): Promise<Capabilities> {
-    this.assertOpen();
+export type { BrowserOutput } from './files.js';
 
-    return {
-      video: this.unavailable(formats.video),
-      audio: this.unavailable(formats.audio),
-      image: this.unavailable(formats.image),
-    };
-  }
+export { defaultLimits, deviceLimits, type ResourceLimits } from './limits.js';
 
-  async probe(_file: InputFile, signal?: AbortSignal): Promise<MediaMetadata> {
-    this.assertOpen();
-    signal?.throwIfAborted();
+export {
+  domMediaRuntime,
+  type DecodedAudio,
+  type ElementMetadata,
+  type MediaRuntime,
+} from './runtime.js';
 
-    throw new ConversionServiceError(
-      'unsupported',
-      'Browser probe unavailable',
-    );
-  }
+export { encodeWav, readWavHeader } from './wav.js';
 
-  async enqueue(_request: ConversionRequest): Promise<ConversionQueue> {
-    this.assertOpen();
-
-    throw new ConversionServiceError(
-      'unsupported',
-      'Browser conversion is not available yet',
-    );
-  }
-
-  async getSnapshot(): Promise<ConversionQueue> {
-    this.assertOpen();
-
-    return { revision: 0, batches: [], jobs: [] };
-  }
-
-  subscribe(_listener: (queue: ConversionQueue) => void): () => void {
-    this.assertOpen();
-
-    return () => {};
-  }
-
-  async cancelJob(_id: string): Promise<CancelResult> {
-    this.assertOpen();
-
-    return { status: 'not-found' };
-  }
-
-  async cancelBatch(_id: string): Promise<CancelResult> {
-    this.assertOpen();
-
-    return { status: 'not-found' };
-  }
-
-  async dispose(): Promise<void> {
-    this.disposed = true;
-  }
-
-  private unavailable(values: readonly string[]): Capabilities['image'] {
-    return values.map((format) => ({
-      format,
-      available: false,
-      reason: 'Browser conversion is not available yet',
-    }));
-  }
-
-  private assertOpen(): void {
-    if (this.disposed) {
-      throw new ConversionServiceError('disposed', 'Conversion service closed');
-    }
-  }
-}
+export { sniff, type SniffedFormat } from './signatures.js';

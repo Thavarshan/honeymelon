@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 import { SiteHeader } from '../src/components/site-header';
 import { MotionToggle } from '../src/components/motion-toggle';
-import { pageMetadata } from '../src/lib/metadata';
+import { getWebAppUrl, pageMetadata } from '../src/lib/metadata';
 import './globals.css';
 
 /**
@@ -44,7 +44,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <div className="site-shell">
-          <SiteHeader />
+          <SiteHeader webAppUrl={getWebAppUrl()?.href} />
           {children}
           <footer className="site-footer">
             <div className="site-container">

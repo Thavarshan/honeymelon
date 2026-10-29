@@ -21,10 +21,10 @@ rejected cancellation, never a falsely successful cancellation.
 
 ## Browser harness
 
-The fixture mounts the real shared converter over the explicitly unsupported
-browser stub. It needs no Cloudflare credentials, account, server conversion
-API, or Electron bridge. Generated PNG/JPEG files are checked in under
-`packages/e2e/fixtures/images`; no private sample media is used.
+The fixture mounts the real shared converter over
+`UnsupportedConversionService`. It needs no Cloudflare credentials, account,
+server conversion API, or Electron bridge. Generated PNG/JPEG files are checked
+in under `packages/e2e/fixtures/images`; no private sample media is used.
 
 ```sh
 npm run build:packages
@@ -37,16 +37,21 @@ dedicated config prevents Vitest from collecting Playwright specs. Browser
 projects reuse the common trace, screenshot, and report settings. The browser
 suite rejects external requests and all methods except GET/HEAD while local
 files are selected. The optional `HONEYMELON_E2E_WEB_URL` can point these tests
-at an existing browser fixture host. There is still no product web converter
-application.
+at an existing browser fixture host.
+
+The product web app has its own suite (`npm run test:web`, see the
+[e2e README](../../packages/e2e/README.md)) that converts and inspects real
+files. `@honeymelon/browser-engine` unit tests drive the real service through a
+scripted worker and media runtime: capability probing, settings, renamed,
+animated and oversized inputs, cancellation, crash, timeout, memory budget,
+audio, video frames and a no-network guard.
 
 Import UI and converter styles into one host CSS entry so Tailwind processes
 both source declarations; importing separate styles directly from JavaScript can
 leave a standalone `@source` directive unprocessed.
 
-PR quality CI installs Chromium and runs the small converter harness and static
-site tests; browser diagnostics are retained for seven days. Local
-configurations also cover Firefox and WebKit; the open #77 milestone tracks the
-browser image MVP test suite and preview. Desktop CI covers six native build
-targets and the Linux distro compatibility job. PRs skip only the exhaustive
-native conversion-pair matrix; non-PR exhaustive verification retains it.
+PR quality CI installs Chromium, Firefox and WebKit and runs the converter
+harness, static site tests and the web suite; browser diagnostics are retained
+for seven days. Desktop CI covers six native build targets and the Linux distro
+compatibility job. PRs skip only the exhaustive native conversion-pair matrix;
+non-PR exhaustive verification retains it.

@@ -1,9 +1,9 @@
 import { expect, it, vi } from 'vitest';
 import type { ConversionService } from '@honeymelon/core';
-import { BrowserConversionService } from './index';
+import { UnsupportedConversionService } from './unsupported';
 
 it('negotiates unavailable capabilities and never creates phantom jobs', async () => {
-  const service: ConversionService = new BrowserConversionService();
+  const service: ConversionService = new UnsupportedConversionService();
   const listener = vi.fn();
   const unsubscribe = service.subscribe(listener);
   const capabilities = await service.discoverCapabilities();
@@ -37,7 +37,7 @@ it('negotiates unavailable capabilities and never creates phantom jobs', async (
 });
 
 it('honors an already aborted probe before reporting unsupported media', async () => {
-  const service: ConversionService = new BrowserConversionService();
+  const service: ConversionService = new UnsupportedConversionService();
   const controller = new AbortController();
   controller.abort();
   await expect(

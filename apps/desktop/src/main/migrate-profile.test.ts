@@ -1,6 +1,8 @@
 import {
   mkdtemp,
   mkdir,
+  open,
+  readdir,
   readFile,
   writeFile,
   rm,
@@ -13,6 +15,19 @@ import { defaultPreferences } from '@honeymelon/contracts';
 import { migrateProfile, legacyProfileNames } from './migrate-profile';
 
 const roots: string[] = [];
+
+/** Read bytes and mtime through one handle, so the check has no race. */
+async function snapshot(file: string) {
+  const handle = await open(file, 'r');
+  try {
+    return {
+      text: await handle.readFile('utf8'),
+      mtimeMs: (await handle.stat()).mtimeMs,
+    };
+  } finally {
+    await handle.close();
+  }
+}
 
 async function fixture() {
   const root = await mkdtemp(path.join(tmpdir(), 'honeymelon-migration-'));
@@ -108,4 +123,47 @@ it('concurrent imports publish once without replacing newer settings', async () 
   expect(
     await readFile(path.join(destination, 'preferences-v1.json'), 'utf8'),
   ).toBe(original);
+});
+
+it('falls back past an invalid profile and leaves no staging residue', async () => {
+  const { root, source, destination } = await fixture();
+  const invalid = path.join(source, 'preferences-v1.json');
+  await writeFile(invalid, '{broken');
+  const before = await snapshot(invalid);
+  const lowercase = path.join(root, legacyProfileNames[1]);
+  // Case-insensitive file systems resolve both legacy names to one directory,
+  // so creating the lowercase one fails there with EEXIST.
+  const distinct = await mkdir(lowercase).then(
+    () => true,
+    (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+
+      return false;
+    },
+  );
+  if (distinct) {
+    const valid = JSON.stringify({
+      ...defaultPreferences(tmpdir()),
+      locale: 'de',
+    });
+    await writeFile(path.join(lowercase, 'preferences-v1.json'), valid);
+    expect(await migrateProfile(root, destination)).toBe('imported');
+    expect(
+      await readFile(path.join(destination, 'preferences-v1.json'), 'utf8'),
+    ).toBe(valid);
+  } else {
+    expect(await migrateProfile(root, destination)).toBe('absent');
+  }
+
+  expect(await snapshot(invalid)).toEqual(before);
+  expect(before.text).toBe('{broken');
+  const residue = (await readdir(destination).catch(() => [])).filter((name) =>
+    name.startsWith('.import-'),
+  );
+  expect(residue).toEqual([]);
+  expect(await migrateProfile(root, destination)).toBe(
+    distinct ? 'existing' : 'absent',
+  );
 });

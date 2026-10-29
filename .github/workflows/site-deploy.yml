@@ -59,6 +59,8 @@ jobs:
     timeout-minutes: 15
     env:
       HONEYMELON_SITE_URL: ${{ needs.admission.outputs.canonical_origin }}
+      # Empty until the web app is deployed; the site then links to it.
+      HONEYMELON_WEB_URL: ${{ vars.HONEYMELON_WEB_PRODUCTION_URL }}
       DEPLOY_TARGET: ${{ needs.admission.outputs.target }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
