@@ -48,7 +48,7 @@ const headers = await readFile(path.join(output, '_headers'), 'utf8');
 
 // Check rendered exact destinations against the same validated build snapshot.
 assert.ok(landing.includes('href="/download/"'));
-assert.ok(landing.includes('Smart Media Conversion'));
+assert.ok(landing.includes('Made simple.'));
 assert.ok(landing.includes('Pause motion'));
 const manifest = validateManifest(
   JSON.parse(

@@ -35,12 +35,18 @@ test('HTTP security headers restrict powerful browser features', async () => {
   assert.ok(headers.includes("connect-src 'self'"));
 });
 
-test('both marketing pages use the actual shared UI components', async () => {
-  for (const name of ['app/page.tsx', 'src/components/release-center.tsx']) {
+test('marketing and download pages use the actual shared UI components', async () => {
+  for (const name of ['app/page.tsx', 'src/components/download-library.tsx']) {
     const page = await source(name);
 
-    assert.ok(page.includes("from '@honeymelon/ui/components/button'"));
+    assert.ok(page.includes("from '@honeymelon/ui/components/card'"));
     assert.ok(page.includes("from '@honeymelon/ui/components/badge'"));
+  }
+
+  for (const name of ['app/page.tsx', 'src/components/smart-download.tsx']) {
+    assert.ok(
+      (await source(name)).includes("from '@honeymelon/ui/components/button'"),
+    );
   }
 
   const styles = await source('app/globals.css');

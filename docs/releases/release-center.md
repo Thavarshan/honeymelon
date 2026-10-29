@@ -4,9 +4,9 @@ The Release Center delivered under closed issue #71 serves a checked JSON
 snapshot in the static site export. Site deployment to Cloudflare remains a
 separate open milestone (#72). Visitors never call GitHub's API, upload media,
 or receive an API token. `@honeymelon/contracts` owns the public types;
-`@honeymelon/ui` supplies buttons, badges and the native select shared across
-the monorepo. Turbo builds these packages before the site and runs the site
-tests through the existing verification jobs.
+`@honeymelon/ui` supplies the buttons, badges and cards shared across the
+monorepo. Turbo builds these packages before the site and runs the site tests
+through the existing verification jobs.
 
 ## Refresh and recovery
 
@@ -41,12 +41,31 @@ both prevent accidental stable promotion. Version ordering uses semver
 precedence; duplicate versions fail validation. Updater feeds and nupkg files
 are not installers. Unknown or conflicting filename tokens stay unknown.
 
-Browser client hints or UA suggest only the OS. Neither an Intel-looking Mac UA
-nor Windows' emulation UA establishes CPU architecture. Users explicitly choose
-x64 or ARM64 and a published package format. Linux distribution/package
-preferences are never inferred. A unique matching asset is required for the
-primary CTA; no automatic download occurs. The all-assets disclosure and
-original GitHub release links also work without JavaScript.
+The download page starts the latest **stable** package automatically when it can
+identify exactly one, Apple style ("Your download will begin in 3 seconds", with
+Cancel). Prereleases are never downloaded automatically. Matching lives in
+`apps/site/src/lib/downloads.ts` and is unit tested against this snapshot:
+
+- **OS** comes from `navigator.userAgentData.platform` or the user agent.
+  Phones, iPadOS (a Mac user agent with touch points) and ChromeOS get no
+  automatic download.
+- **CPU** comes only from real signals: the `architecture` client hint
+  (Chromium) or, on a Mac, an explicit WebGL renderer name (`Apple M…` means
+  Apple silicon; Intel/AMD/NVIDIA means Intel). Safari reports every Mac GPU as
+  "Apple GPU", and an Intel-looking Mac user agent proves nothing, so those Macs
+  get a one-click chip choice, never a guess. Linux takes the architecture token
+  from its user agent.
+- **Windows without a CPU hint** (for example Firefox) gets the x64 installer.
+  x64 runs on Windows 11 on ARM through emulation; Windows 10 on ARM cannot run
+  it, which is the known limit of this default.
+- **Linux packaging** is inferred only from a distribution token in the user
+  agent (Ubuntu, Debian, Mint → .deb; Fedora, RHEL, SUSE → .rpm). Otherwise
+  visitors choose with one click.
+
+A download starts at most once per tab session (`sessionStorage`), and never
+when the page is opened with `?auto=0` or any `#section` link. Every package of
+every published version is also a plain link on the same page, grouped by
+platform, with no selects or forms; it all works without JavaScript.
 
 SHA-256 digests are shown only when published in GitHub's asset `digest` field,
 with that provenance. Older assets without digests are marked unknown. Checksums
@@ -61,6 +80,9 @@ Run `npm run test -w @honeymelon/site`, `npm run build:browser`,
 `npm run test:site -- --project=site-chromium`, `npm run lint`, and
 `npm run typecheck`. Unit tests exercise filenames, semver, trust validation,
 rate limits, offline recovery, first-run fallback, redirect restrictions and
-token isolation. Playwright checks direct Windows ARM and Apple Silicon CTA
-URLs, channel separation, keyboard controls, mobile overflow and axe on every
-public route. Review the screenshot/axe artifacts from CI before merging.
+token isolation. Playwright drives the page as Windows (x64 and ARM), Apple
+silicon and Intel Macs, Safari on a Mac, Ubuntu, generic Linux and an iPhone. It
+checks the exact automatic download, that it happens once, Cancel, the opt-outs,
+the no-forms library, keyboard access, mobile overflow and axe on every public
+route. GitHub downloads are intercepted, so tests never fetch a package. Review
+the screenshot/axe artifacts from CI before merging.

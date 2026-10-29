@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMetadata(
 export default function LicensePage(): ReactElement {
   return (
     <main id="main-content" className="content-page" tabIndex={-1}>
-      <p className="section-kicker">OPEN SOURCE / 005</p>
+      <p className="eyebrow">License</p>
       <h1>Open for inspection.</h1>
       <p>
         Honeymelon is open-source software distributed under the MIT license.
