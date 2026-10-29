@@ -45,10 +45,11 @@ can read the tab; the host sees request metadata (IP address, user agent).
 
 Checked from installed package manifests on 28 October 2026. `apps/web` bundles
 React, React DOM, radix-ui, cmdk, cn, tw-animate-css, i18next, react-i18next,
-zod and fflate (MIT); lucide-react (ISC); class-variance-authority (Apache-2.0,
-compatible; keep its notice with redistributed source); and the Inter font via
-`@fontsource-variable/inter` (SIL OFL 1.1). No FFmpeg or GPL code ships in the
-web app (ADR 0003).
+zod and fflate (MIT); mediabunny (MPL-2.0, file-level copyleft, used unmodified;
+source is the published npm package); lucide-react (ISC);
+class-variance-authority (Apache-2.0, compatible; keep its notice with
+redistributed source); and the Inter font via `@fontsource-variable/inter` (SIL
+OFL 1.1). No FFmpeg or GPL code ships in the web app (ADR 0003).
 
 ## Accessibility record
 

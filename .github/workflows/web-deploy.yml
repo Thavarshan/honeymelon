@@ -90,7 +90,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment:
-      name: web-${{ needs.admission.outputs.target }}
+      # Shares the site environments: same reviewers and scoped Cloudflare token.
+      name: site-${{ needs.admission.outputs.target }}
       url: ${{ needs.admission.outputs.app_url }}
     env:
       DEPLOY_TARGET: ${{ needs.admission.outputs.target }}

@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@honeymelon/contracts": "*",
-    "@honeymelon/core": "*"
+    "@honeymelon/core": "*",
+    "mediabunny": "1.63.0"
   },
   "devDependencies": {
     "vite": "8.3.4"

@@ -15,6 +15,8 @@ export interface ResourceLimits {
   retainedBytes: number;
   /** Files admitted into one browser session. */
   queuedFiles: number;
+  /** Longest video, in seconds, accepted for browser transcoding. */
+  videoSeconds: number;
   /** Hard deadline after which a stuck worker is terminated. */
   jobTimeoutMs: number;
 }
@@ -28,7 +30,8 @@ export const defaultLimits: ResourceLimits = {
   pcmBytes: 512 * MiB,
   retainedBytes: 512 * MiB,
   queuedFiles: 200,
-  jobTimeoutMs: 5 * 60_000,
+  videoSeconds: 10 * 60,
+  jobTimeoutMs: 15 * 60_000,
 };
 
 /**
@@ -55,6 +58,7 @@ export function deviceLimits(
     pcmBytes: base.pcmBytes / divisor,
     retainedBytes: base.retainedBytes / divisor,
     queuedFiles: base.queuedFiles,
+    videoSeconds: base.videoSeconds / divisor,
     jobTimeoutMs: base.jobTimeoutMs,
   };
 }

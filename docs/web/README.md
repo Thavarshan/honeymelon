@@ -7,17 +7,17 @@ replacement for it.
 
 ## What it can do
 
-| Source             | Output                                                     | Notes                                                               |
-| ------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------- |
-| JPEG, PNG, WebP    | JPEG, PNG; WebP and AVIF only if this browser encodes them | Resize (downscale only), quality, background for transparency       |
-| BMP, still GIF     | Same as above                                              | Animated GIF, APNG and animated WebP are refused, not flattened     |
-| AVIF               | Same as above                                              | Only where this browser decodes AVIF                                |
-| MP3, FLAC, Ogg, …  | WAV (16- or 24-bit)                                        | Sample rate, mono/stereo; input support depends on the browser      |
-| WebM, MP4 and more | WAV (audio track) or a still image (frame at a timestamp)  | First audio track only; the browser must be able to decode the file |
+| Source             | Output                                                     | Notes                                                           |
+| ------------------ | ---------------------------------------------------------- | --------------------------------------------------------------- |
+| JPEG, PNG, WebP    | JPEG, PNG; WebP and AVIF only if this browser encodes them | Resize (downscale only), quality, background for transparency   |
+| BMP, still GIF     | Same as above                                              | Animated GIF, APNG and animated WebP are refused, not flattened |
+| AVIF               | Same as above                                              | Only where this browser decodes AVIF                            |
+| MP3, FLAC, Ogg, …  | WAV (16- or 24-bit)                                        | Sample rate, mono/stereo; input support depends on the browser  |
+| WebM, MP4 and more | MP4 or WebM video, WAV (audio track), or a still image     | Encoders are probed per browser; up to 10 minutes per video     |
 
-The format menu marks everything else, including all video transcoding, as
-unavailable, and the tooltip says why. Unavailable formats are never offered and
-then failed.
+The format menu marks everything else (other containers, ProRes, MP3/AAC
+encoding) as unavailable, and the tooltip says why. Unavailable formats are
+never offered and then failed.
 
 Output names follow the source name (`photo.png` → `photo.jpg`). Duplicate names
 get a suffix (`photo (2).jpg`). EXIF orientation is applied; other metadata
@@ -36,11 +36,12 @@ other browsers use the defaults).
 | Decoded audio                        | 512 MiB of PCM (about 11 minutes of 48 kHz stereo) |
 | Finished files held for download     | 512 MiB                                            |
 | Files in one tab                     | 200                                                |
-| One conversion                       | 5 minutes                                          |
+| Video length                         | 10 minutes                                         |
+| One conversion                       | 15 minutes                                         |
 
 Files are converted one at a time, each in a fresh background worker. Cancel
 stops the worker immediately and discards partial output. Large files, long
-tracks, animated images and video transcoding belong in Desktop.
+tracks, animated images and other video formats belong in Desktop.
 
 ## Privacy
 

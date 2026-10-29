@@ -230,12 +230,58 @@ test('writes WAV from compressed audio with stored output settings', async ({
   }
 });
 
-test('extracts audio from WebM, captures a frame, and offers no video encoder', async ({
-  page,
-}) => {
+/** Choose a task and format in the open Output settings dialog. */
+async function chooseTask(page: Page, task: string, format: RegExp) {
+  const video = panel(page, 'Video');
+  await video.getByRole('button', { name: 'Output settings' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Output settings' });
+  await dialog.getByRole('combobox', { name: 'Task' }).click();
+  await page.getByRole('option', { name: task }).click();
+  await dialog.getByRole('combobox', { name: 'Output format' }).click();
+  const option = page.getByRole('option', { name: format });
+  const unavailable =
+    (await option.getByText('Encoder unavailable').count()) > 0;
+  if (unavailable) {
+    await page.keyboard.press('Escape');
+  } else {
+    await option.click();
+  }
+
+  await dialog.getByRole('button', { name: 'Dismiss' }).click();
+  await expect(dialog).toBeHidden();
+
+  return !unavailable;
+}
+
+/** Play a downloaded video in the page and read its real properties. */
+async function playable(page: Page, bytes: Buffer, mime: string) {
+  return page.evaluate(
+    async ([data, type]) => {
+      const video = document.createElement('video');
+      video.muted = true;
+      video.src = URL.createObjectURL(
+        new Blob([new Uint8Array(data as number[])], { type: type as string }),
+      );
+      await new Promise((resolve, reject) => {
+        video.onloadeddata = resolve;
+        video.onerror = () => reject(new Error('Video did not decode'));
+      });
+
+      return {
+        width: video.videoWidth,
+        height: video.videoHeight,
+        duration: video.duration,
+      };
+    },
+    [[...bytes], mime] as const,
+  );
+}
+
+test('extracts audio from WebM and captures a frame', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('tab', { name: 'Video' }).click();
   const video = panel(page, 'Video');
+  expect(await chooseTask(page, 'Extract audio', /^WAV/)).toBe(true);
   await video
     .locator('input[type=file]')
     .setInputFiles([
@@ -255,21 +301,7 @@ test('extracts audio from WebM, captures a frame, and offers no video encoder', 
   expect(await detail(page, 'silent-video.webm')).toContain('audio');
 
   await video.getByRole('button', { name: 'Clear' }).click();
-  await video.getByRole('button', { name: 'Output settings' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Output settings' });
-  await dialog.getByRole('combobox', { name: 'Task' }).click();
-  await page.getByRole('option', { name: 'Convert video' }).click();
-  await dialog.getByRole('combobox', { name: 'Output format' }).click();
-  await expect(page.getByRole('option', { name: /^MP4/ })).toContainText(
-    'Encoder unavailable',
-  );
-  await page.keyboard.press('Escape');
-  await dialog.getByRole('combobox', { name: 'Task' }).click();
-  await page.getByRole('option', { name: 'Save a frame' }).click();
-  await dialog.getByRole('combobox', { name: 'Output format' }).click();
-  await page.getByRole('option', { name: /^PNG/ }).click();
-  await dialog.getByRole('button', { name: 'Dismiss' }).click();
-  await expect(dialog).toBeHidden();
+  expect(await chooseTask(page, 'Save a frame', /^PNG/)).toBe(true);
   await video
     .locator('input[type=file]')
     .setInputFiles(fixture('media/clip.webm'));
@@ -280,6 +312,77 @@ test('extracts audio from WebM, captures a frame, and offers no video encoder', 
     width: 320,
     height: 240,
   });
+});
+
+for (const [format, mime] of [
+  ['MP4', 'video/mp4'],
+  ['WEBM', 'video/webm'],
+] as const) {
+  test(`transcodes WebM to playable ${format} in a worker`, async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByRole('tab', { name: 'Video' }).click();
+    const available = await chooseTask(
+      page,
+      'Convert video',
+      new RegExp(`^${format}`),
+    );
+    test.skip(!available, `No verified ${format} encoder in this engine`);
+    const video = panel(page, 'Video');
+    await video
+      .locator('input[type=file]')
+      .setInputFiles(fixture('media/clip.webm'));
+    await convert(page, 'Video');
+    await expect(video.getByText('Complete')).toBeVisible();
+    const file = await download(page, 'clip.webm');
+    expect(file.suggestedFilename()).toBe(`clip.${format.toLowerCase()}`);
+    const result = await playable(page, await downloadBytes(file), mime);
+    expect(result).toMatchObject({ width: 320, height: 240 });
+    expect(result.duration).toBeGreaterThan(1.8);
+    expect(result.duration).toBeLessThan(2.3);
+  });
+}
+
+test('stays responsive while converting a large queue', async ({
+  page,
+  browserName,
+}) => {
+  test.skip(
+    browserName !== 'chromium',
+    'Long-task timing is exposed by Chromium only',
+  );
+  await page.addInitScript(() => {
+    const host = window as Window & { honeymelonLongTasks?: number[] };
+    host.honeymelonLongTasks = [];
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        host.honeymelonLongTasks!.push(entry.duration);
+      }
+    }).observe({ type: 'longtask', buffered: false });
+  });
+  await page.goto('/');
+  const png = await readFile(fixture('images/rgb.png'));
+  await panel(page, 'Image')
+    .locator('input[type=file]')
+    .setInputFiles(
+      Array.from({ length: 150 }, (_, index) => ({
+        name: `photo-${index}.png`,
+        mimeType: 'image/png',
+        buffer: png,
+      })),
+    );
+  await convert(page, 'Image');
+  await expect(panel(page, 'Image').locator('.state-succeeded')).toHaveCount(
+    150,
+  );
+  const tasks = await page.evaluate(
+    () =>
+      (window as Window & { honeymelonLongTasks?: number[] })
+        .honeymelonLongTasks ?? [],
+  );
+  // A frame budget of 200 ms keeps input responsive even on slow devices.
+  expect(Math.max(0, ...tasks)).toBeLessThan(200);
 });
 
 test('completes the image workflow with the keyboard alone', async ({

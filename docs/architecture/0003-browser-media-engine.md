@@ -13,13 +13,14 @@ the conditions below. Related:
 Honeymelon Web uses the browser's own decoders and a small first-party encoder
 instead of FFmpeg WebAssembly:
 
-| Operation                | Implementation                                                                  | Output                              |
-| ------------------------ | ------------------------------------------------------------------------------- | ----------------------------------- |
-| Image → image            | `createImageBitmap` + `OffscreenCanvas` in a per-job worker                     | JPEG, PNG; WebP/AVIF only if probed |
-| Audio → audio            | `OfflineAudioContext.decodeAudioData` on the main thread; PCM WAV in the worker | WAV, 16- or 24-bit                  |
-| Video → audio (extract)  | Same audio path; the browser demuxes the container                              | WAV                                 |
-| Video → image (frame)    | `<video>` seek + `createImageBitmap`; encoding in the image worker              | Image encoders above                |
-| Video → video, other A/V | Not offered in the browser                                                      | Use Honeymelon Desktop              |
+| Operation               | Implementation                                                                            | Output                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Image → image           | `createImageBitmap` + `OffscreenCanvas` in a per-job worker                               | JPEG, PNG; WebP/AVIF only if probed                  |
+| Audio → audio           | `OfflineAudioContext.decodeAudioData` on the main thread; PCM WAV in the worker           | WAV, 16- or 24-bit                                   |
+| Video → audio (extract) | Same audio path; the browser demuxes the container                                        | WAV                                                  |
+| Video → image (frame)   | `<video>` seek + `createImageBitmap`; encoding in the image worker                        | Image encoders above                                 |
+| Video → video           | WebCodecs via Mediabunny 1.63 (MPL-2.0) in the worker: demux, decode, resize, encode, mux | MP4 (H.264/HEVC/AV1) and WebM (VP9/AV1) where probed |
+| Other A/V outputs       | Not offered in the browser                                                                | Use Honeymelon Desktop                               |
 
 No FFmpeg core, third-party loader script or remote asset is fetched. Capability
 discovery advertises only outputs that this path actually produces; every other
@@ -73,9 +74,18 @@ the WAV writer's own header. End-to-end tests download and inspect real outputs.
   selection above 0 is rejected before a job is created.
 - Video frame capture runs a `<video>` element on the main thread, bounded to
   one frame. Encoding still happens in the worker.
-- Video transcoding is not offered. #80's "bounded video" scope is delivered as
-  frame capture and audio extraction with an explicit Desktop fallback, not as
-  browser transcoding.
+- Video transcoding (#80, added 29 October 2026) uses the browser's own
+  WebCodecs encoders through Mediabunny, not FFmpeg WASM. The worker probes
+  `canEncodeVideo` per container and codec; only verified pairs are offered.
+  Inputs are capped at 10 minutes and 50 megapixels per frame (scaled down on
+  low-memory devices), output is held in memory under the retained-output
+  budget, and cancel terminates the worker. If an input or audio track cannot be
+  decoded or re-encoded, the job fails with the reason instead of silently
+  dropping the track. Mediabunny adds about 120 KB gzip to the worker chunk,
+  which loads only when a conversion starts. It is MPL-2.0: file-level copyleft
+  that permits distribution in this MIT app; its source is the published npm
+  package. E2E tests transcode a VP9/Opus WebM to MP4 and WebM in Chromium and
+  Firefox and play the results back.
 
 ## Revisit when all of these hold
 

@@ -1,8 +1,30 @@
 import type { ConversionErrorCode } from '@honeymelon/core';
+import {
+  BlobSource,
+  BufferTarget,
+  Conversion,
+  Input,
+  MATROSKA,
+  MP4,
+  Mp4OutputFormat,
+  Output,
+  QTFF,
+  QUALITY_HIGH,
+  QUALITY_LOW,
+  QUALITY_MEDIUM,
+  WEBM,
+  WebMOutputFormat,
+  canEncodeVideo,
+  type DiscardedTrack,
+  type VideoCodec,
+} from 'mediabunny';
 import { fitDimensions } from './limits.js';
 import {
   encoderTypes,
+  videoContainers,
   type EncoderType,
+  type VideoCodecName,
+  type VideoContainer,
   type WorkerRequest,
   type WorkerResponse,
 } from './protocol.js';
@@ -25,6 +47,20 @@ class WorkerFailure extends Error {
     super(message);
   }
 }
+
+/** Contract codec names to WebCodecs codec identifiers. */
+const webCodecs: Record<VideoCodecName, VideoCodec> = {
+  h264: 'avc',
+  hevc: 'hevc',
+  vp9: 'vp9',
+  av1: 'av1',
+};
+
+/** Codecs each container can hold, most compatible first. */
+const containerCodecs: Record<VideoContainer, VideoCodecName[]> = {
+  mp4: ['h264', 'hevc', 'av1'],
+  webm: ['vp9', 'av1'],
+};
 
 const signatures: Record<EncoderType, string> = {
   'image/png': 'png',
@@ -65,18 +101,49 @@ async function decode(source: Blob): Promise<ImageBitmap> {
   }
 }
 
+/** Ask WebCodecs which codecs each container can actually be written with. */
+async function videoCapabilities(): Promise<
+  Record<VideoContainer, VideoCodecName[]>
+> {
+  const result: Record<VideoContainer, VideoCodecName[]> = {
+    mp4: [],
+    webm: [],
+  };
+  if (typeof VideoEncoder === 'undefined') {
+    return result;
+  }
+
+  for (const container of videoContainers) {
+    for (const name of containerCodecs[container]) {
+      try {
+        // A modest size keeps the probe meaningful on hardware encoders.
+        if (
+          await canEncodeVideo(webCodecs[name], { width: 1280, height: 720 })
+        ) {
+          result[container].push(name);
+        }
+      } catch {
+        /* A probe that throws means the codec is unavailable. */
+      }
+    }
+  }
+
+  return result;
+}
+
 async function capabilities(): Promise<WorkerResponse> {
+  const video = await videoCapabilities();
   if (
     typeof OffscreenCanvas === 'undefined' ||
     typeof createImageBitmap === 'undefined'
   ) {
-    return { type: 'capabilities', offscreen: false, encoders: [] };
+    return { type: 'capabilities', offscreen: false, encoders: [], video };
   }
 
   const canvas = new OffscreenCanvas(2, 2);
   const context = canvas.getContext('2d');
   if (!context) {
-    return { type: 'capabilities', offscreen: false, encoders: [] };
+    return { type: 'capabilities', offscreen: false, encoders: [], video };
   }
 
   context.fillStyle = '#808080';
@@ -100,7 +167,134 @@ async function capabilities(): Promise<WorkerResponse> {
     }
   }
 
-  return { type: 'capabilities', offscreen: true, encoders };
+  return { type: 'capabilities', offscreen: true, encoders, video };
+}
+
+/** Even dimensions: most video encoders reject odd frame sizes. */
+const even = (value: number) => Math.max(2, Math.round(value / 2) * 2);
+
+const qualities = {
+  small: QUALITY_LOW,
+  balanced: QUALITY_MEDIUM,
+  high: QUALITY_HIGH,
+};
+
+const discardReasons: Partial<Record<DiscardedTrack['reason'], string>> = {
+  undecodable_source_codec: 'This browser cannot decode the video in this file',
+  unknown_source_codec:
+    'This file uses a video codec the browser does not know',
+  no_encodable_target_codec:
+    'This browser cannot encode the requested video codec',
+};
+
+/**
+ * Transcode with WebCodecs through Mediabunny: demux, decode, resize, encode
+ * and mux entirely in this worker. Terminating the worker cancels it.
+ */
+async function video(
+  request: Extract<WorkerRequest, { type: 'video' }>,
+): Promise<WorkerResponse> {
+  if (typeof VideoEncoder === 'undefined') {
+    throw new WorkerFailure(
+      'unsupported',
+      'This browser cannot encode video; use Honeymelon Desktop',
+    );
+  }
+
+  const input = new Input({
+    source: new BlobSource(request.source),
+    // Only video containers: unused demuxers would bloat the worker.
+    formats: [MP4, QTFF, MATROSKA, WEBM],
+  });
+  try {
+    const track = await input.getPrimaryVideoTrack().catch(() => null);
+    if (!track) {
+      throw new WorkerFailure(
+        'invalid-input',
+        'This file has no video track this browser can read',
+      );
+    }
+
+    const duration = await input.computeDuration();
+    if (duration > request.maxSeconds) {
+      throw new WorkerFailure(
+        'invalid-input',
+        `This ${Math.round(duration / 60)}-minute video exceeds the ${Math.round(request.maxSeconds / 60)}-minute browser limit; use Honeymelon Desktop`,
+      );
+    }
+
+    const width = track.displayWidth;
+    const height = track.displayHeight;
+    if (width * height > request.maxPixels) {
+      throw new WorkerFailure(
+        'invalid-input',
+        'This video frame exceeds the browser pixel limit; use Honeymelon Desktop',
+      );
+    }
+
+    const size = fitDimensions(width, height, request);
+    const quality = qualities[request.quality];
+    const output = new Output({
+      format:
+        request.container === 'webm'
+          ? new WebMOutputFormat()
+          : new Mp4OutputFormat({ fastStart: 'in-memory' }),
+      target: new BufferTarget(),
+    });
+    const conversion = await Conversion.init({
+      input,
+      output,
+      tracks: 'primary',
+      showWarnings: false,
+      video: {
+        width: even(size.width),
+        height: even(size.height),
+        fit: 'contain',
+        quality,
+        ...(request.codec ? { codec: webCodecs[request.codec] } : {}),
+        ...(request.frameRate ? { frameRate: request.frameRate } : {}),
+      },
+      audio: request.includeAudio ? { quality } : { discard: true },
+    });
+    const discarded = conversion.discardedTracks.find(
+      (entry) =>
+        entry.reason !== 'discarded_by_user' &&
+        (entry.track.isVideoTrack() || request.includeAudio),
+    );
+    if (!conversion.isValid || discarded) {
+      const reason = discarded?.reason;
+      throw new WorkerFailure(
+        'unsupported',
+        discarded?.track.isAudioTrack()
+          ? `This browser cannot write this audio into ${request.container.toUpperCase()}; turn off Include audio or use Honeymelon Desktop`
+          : ((reason && discardReasons[reason]) ??
+              'This browser cannot convert this video; use Honeymelon Desktop'),
+      );
+    }
+
+    conversion.onProgress = (progress) =>
+      scope.postMessage({
+        type: 'progress',
+        value: 10 + Math.floor(progress * 85),
+      });
+    await conversion.execute();
+    const buffer = output.target.buffer;
+    if (!buffer?.byteLength) {
+      throw new WorkerFailure(
+        'conversion-failed',
+        'The video encoder produced no data',
+      );
+    }
+
+    return {
+      type: 'result',
+      blob: new Blob([buffer], { type: `video/${request.container}` }),
+      width: even(size.width),
+      height: even(size.height),
+    };
+  } finally {
+    input.dispose();
+  }
 }
 
 /** Scan alpha in strips so the check never doubles a large canvas. */
@@ -227,6 +421,8 @@ scope.onmessage = (event) => {
         return image(request);
       case 'wav':
         return wav(request);
+      case 'video':
+        return video(request);
     }
   };
 

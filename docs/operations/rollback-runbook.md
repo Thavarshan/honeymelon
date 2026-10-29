@@ -96,13 +96,19 @@ Cloudflare history. Roll them back only from the Cloudflare dashboard or an
 authenticated `wrangler rollback` for that Worker name. On 2026-10-28 both
 returned `404` with `error code: 1042` instead of redirecting (see the
 [name decision record](../branding/name-decision-record.md)); fix that before
-relying on them as a rollback target.
+relying on them as a rollback target. On 2026-10-29 the owner decided to retire
+both; they are no longer a rollback target. Delete them with an authenticated
+`wrangler delete --name comet-site` and
+`wrangler delete --name comet-site-preview`.
 
 ## Phase 2 — custom domain and DNS
 
 As of 2026-10-28 no custom domain is attached: `honeymelon.app` does not resolve
 (lame Cloudflare delegation; registration expires 2026-11-03) and
-`comet.thavarshan.com` is NXDOMAIN. There is no DNS state to roll back today.
+`comet.thavarshan.com` is NXDOMAIN. There is no DNS state to roll back today. On
+2026-10-29 the owner decided not to renew `honeymelon.app`; the `workers.dev`
+origins are the canonical addresses, and desktop metadata points at the site
+origin.
 
 When a custom domain is attached later:
 
