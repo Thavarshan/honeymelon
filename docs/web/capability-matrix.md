@@ -18,8 +18,8 @@ They are one sample per cell: read them as orders of magnitude, not targets.
 
 | Engine           | JPEG | PNG | WebP | AVIF | GIF/BMP/TIFF out | WAV out | Other audio out | Video out |
 | ---------------- | ---- | --- | ---- | ---- | ---------------- | ------- | --------------- | --------- |
-| Chromium 156     | yes  | yes | yes  | no   | no               | yes     | no              | no        |
-| Firefox 157      | yes  | yes | yes  | no   | no               | yes     | no              | no        |
+| Chromium 156     | yes  | yes | yes  | no   | no               | yes     | no              | MP4, WebM |
+| Firefox 157      | yes  | yes | yes  | no   | no               | yes     | no              | MP4, WebM |
 | WebKit 27.2 (\*) | yes  | yes | no   | yes  | no               | yes     | no              | no        |
 
 (\*) WebKit row from the
@@ -30,6 +30,9 @@ which skips WebP there by design. Neither engine above is cross-origin isolated
 
 Decoded in both measured engines: MP3, FLAC, Ogg Opus, WAV, and the VP9/Opus
 WebM fixture (audio extraction and frame capture).
+
+Video out: WebM (VP9/Opus) to MP4 and WebM transcodes and plays back in the E2E
+suite (29 October 2026); WebKit availability is probed at runtime.
 
 ## Timings (ms)
 

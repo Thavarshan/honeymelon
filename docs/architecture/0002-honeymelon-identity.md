@@ -54,10 +54,13 @@ GitHub redirects the previous repository URL. Deployment uses the new
 `honeymelon-site` and `honeymelon-site-preview` Workers names. Old public Worker
 URLs should redirect only after the new deployment passes verification.
 
-The authenticated Cloudflare account has no accessible `honeymelon.app` zone.
-Custom-domain cutover requires access to that zone; DNS is not changed by this
-source migration. Name availability and trademark clearance are not implied by
-the technical rename.
+On 29 October 2026 the owner decided not to renew `honeymelon.app` (it expires 3
+November 2026) and to retire the legacy `comet-site` Workers. The canonical
+addresses are `honeymelon-site.tjthavarshan.workers.dev` and
+`honeymelon-web.tjthavarshan.workers.dev`; desktop metadata points at the site.
+A future custom domain would need a new zone; DNS is not changed by this source
+migration. Name availability and trademark clearance are not implied by the
+technical rename.
 
 ## Platform acceptance matrix
 

@@ -19,7 +19,13 @@ import {
 } from '@honeymelon/core';
 import { BrowserFileStore, type BrowserOutput } from './files.js';
 import { defaultLimits, formatBytes, type ResourceLimits } from './limits.js';
-import type { EncoderType, WorkerRequest, WorkerResponse } from './protocol.js';
+import {
+  videoContainers,
+  type EncoderType,
+  type VideoContainer,
+  type WorkerRequest,
+  type WorkerResponse,
+} from './protocol.js';
 import { domMediaRuntime, type MediaRuntime } from './runtime.js';
 import {
   audioSampleRate,
@@ -90,8 +96,11 @@ class BrowserExecutor implements QueueExecutor {
     }
 
     const spec = request.spec ?? defaultConversion(request.mediaType);
-    if (spec.kind === 'video') {
-      throw new ConversionServiceError('unsupported', desktop('video'));
+    if (spec.kind === 'video' && spec.codec === 'prores') {
+      throw new ConversionServiceError(
+        'unsupported',
+        'ProRes output requires Honeymelon Desktop',
+      );
     }
 
     if (spec.kind === 'audio' && spec.track > 0) {
@@ -167,14 +176,14 @@ class BrowserExecutor implements QueueExecutor {
     signal.throwIfAborted();
     progress(5);
     const spec = job.spec ?? defaultConversion(job.mediaType);
+    let blob: Blob;
     if (spec.kind === 'video') {
-      throw new ConversionServiceError('unsupported', desktop('video'));
+      blob = await this.video(job, file, spec, signal, progress);
+    } else if (spec.kind === 'image') {
+      blob = await this.image(job, file, head, format, spec, signal, progress);
+    } else {
+      blob = await this.audio(job, file, head, format, spec, signal, progress);
     }
-
-    const blob =
-      spec.kind === 'image'
-        ? await this.image(job, file, head, format, spec, signal, progress)
-        : await this.audio(job, file, head, format, spec, signal, progress);
 
     signal.throwIfAborted();
     const retained = this.store.retainedBytes() + blob.size;
@@ -235,11 +244,23 @@ class BrowserExecutor implements QueueExecutor {
           ? { format, available: true }
           : { format, available: false, reason: desktop(format) },
       ),
-      video: formats.video.map((format) => ({
-        format,
-        available: false,
-        reason: 'Video conversion requires Honeymelon Desktop',
-      })),
+      video: formats.video.map((format) => {
+        const codecs =
+          probe.type === 'capabilities' &&
+          videoContainers.includes(format as VideoContainer)
+            ? (probe.video?.[format as VideoContainer] ?? [])
+            : [];
+
+        return codecs.length
+          ? { format, available: true, codecs: [...codecs] }
+          : {
+              format,
+              available: false,
+              reason: videoContainers.includes(format as VideoContainer)
+                ? `This browser has no verified ${format.toUpperCase()} video encoder`
+                : desktop(format),
+            };
+      }),
     };
   }
 
@@ -407,6 +428,46 @@ class BrowserExecutor implements QueueExecutor {
         bitDepth: spec.bitDepth ?? 16,
       },
       decoded.channels.map((channel) => channel.buffer as ArrayBuffer),
+      signal,
+      progress,
+    );
+
+    return result.type === 'result' ? result.blob : new Blob();
+  }
+
+  private async video(
+    job: ConversionJob,
+    file: File,
+    spec: Extract<ConversionSpec, { kind: 'video' }>,
+    signal: AbortSignal,
+    progress: (value: number) => void,
+  ): Promise<Blob> {
+    const container = job.outputFormat as VideoContainer;
+    if (job.mediaType !== 'video' || !videoContainers.includes(container)) {
+      throw new ConversionServiceError(
+        'unsupported',
+        desktop(job.outputFormat),
+      );
+    }
+
+    const result = await this.run(
+      {
+        type: 'video',
+        source: file,
+        container,
+        codec:
+          spec.codec === 'default' || spec.codec === 'prores'
+            ? undefined
+            : spec.codec,
+        quality: spec.quality,
+        width: spec.width,
+        height: spec.height,
+        frameRate: spec.frameRate,
+        includeAudio: spec.includeAudio,
+        maxSeconds: this.limits.videoSeconds,
+        maxPixels: this.limits.pixels,
+      },
+      [],
       signal,
       progress,
     );

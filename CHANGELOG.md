@@ -23,8 +23,13 @@ the names and versions under which they were published.
 - Rebrand release gates: desktop identity tests, a release checklist, a
   rollback runbook, a name decision record and a transition guide.
 
+- Browser video conversion to MP4 and WebM with WebCodecs (via Mediabunny),
+  offered only where the browser verifies an encoder, up to 10 minutes.
+
 ### Changed
 
+- Desktop metadata points at the workers.dev site; honeymelon.app is not
+  renewed. The legacy comet-site Workers are retired.
 - The site links to Honeymelon Web and describes its privacy only once
   `HONEYMELON_WEB_PRODUCTION_URL` is configured.
 - Unavailable formats show the reason as a tooltip.

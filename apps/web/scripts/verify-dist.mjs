@@ -9,8 +9,10 @@ import { pathToFileURL } from 'node:url';
 export const limits = {
   files: 20_000,
   fileBytes: 25 * 1024 * 1024,
-  // Product budget for gzip-compressed JavaScript, not a host limit.
+  // Product budgets for gzip-compressed JavaScript, not host limits. The
+  // media worker loads only when a conversion starts, so it has its own.
   javascriptGzipBytes: 300 * 1024,
+  workerGzipBytes: 200 * 1024,
 };
 
 /** Network or upload APIs that application code must never contain. */
@@ -39,6 +41,7 @@ export async function verifyDist(directory) {
   }
 
   let javascript = 0;
+  let workerJs = 0;
   for (const file of files) {
     const bytes = await readFile(path.join(directory, file));
     if ((await stat(path.join(directory, file))).size > limits.fileBytes) {
@@ -50,12 +53,23 @@ export async function verifyDist(directory) {
     }
 
     if (file.endsWith('.js') && file !== 'sw.js') {
-      javascript += gzipSync(bytes).length;
+      if (/^assets\/media-worker-/.test(file)) {
+        workerJs += gzipSync(bytes).length;
+      } else {
+        javascript += gzipSync(bytes).length;
+      }
+
       const match = forbidden.exec(bytes.toString('utf8'));
       if (match) {
         problems.push(`${file}: forbidden network or Node API ${match[0]}`);
       }
     }
+  }
+
+  if (workerJs > limits.workerGzipBytes) {
+    problems.push(
+      `Media worker is ${workerJs} gzip bytes; budget ${limits.workerGzipBytes}`,
+    );
   }
 
   if (javascript > limits.javascriptGzipBytes) {
@@ -93,7 +107,7 @@ export async function verifyDist(directory) {
     }
   }
 
-  return { problems, files: files.length, javascript };
+  return { problems, files: files.length, javascript, worker: workerJs };
 }
 
 if (
@@ -107,6 +121,6 @@ if (
   }
 
   console.log(
-    `Verified ${result.files} static files; JavaScript ${result.javascript} gzip bytes`,
+    `Verified ${result.files} static files; JavaScript ${result.javascript} + worker ${result.worker} gzip bytes`,
   );
 }

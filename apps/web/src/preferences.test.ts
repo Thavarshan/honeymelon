@@ -15,8 +15,8 @@ describe('web preferences', () => {
     expect(defaults.media.image.format).toBe('jpg');
     expect(defaults.media.audio.format).toBe('wav');
     expect(defaults.media.video).toMatchObject({
-      format: 'wav',
-      spec: { kind: 'audio' },
+      format: 'mp4',
+      spec: { kind: 'video' },
     });
     expect(defaultPreferences('pt-BR').locale).toBe('en');
   });
@@ -43,7 +43,7 @@ describe('web preferences', () => {
     expect(loaded.theme).toBe('system');
     expect(loaded.media.image).toEqual({ format: 'webp', spec: undefined });
     expect(loaded.media.audio.format).toBe('wav');
-    expect(loaded.media.video.format).toBe('wav');
+    expect(loaded.media.video.format).toBe('mp4');
   });
 
   it('survives corrupt, blocked or missing storage', () => {

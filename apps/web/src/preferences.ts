@@ -36,7 +36,7 @@ export function defaultPreferences(language = 'en'): WebPreferences {
     media: {
       image: { format: 'jpg', spec: defaultConversion('image') },
       audio: { format: 'wav', spec: defaultConversion('audio') },
-      video: { format: 'wav', spec: defaultConversion('audio') },
+      video: { format: 'mp4', spec: defaultConversion('video') },
     },
   };
 }

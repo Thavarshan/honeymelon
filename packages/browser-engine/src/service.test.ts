@@ -72,6 +72,7 @@ const capabilities: Handler = (request, worker) => {
       type: 'capabilities',
       offscreen: true,
       encoders: ['image/png', 'image/jpeg', 'image/webp'],
+      video: { mp4: ['h264'], webm: ['vp9', 'av1'] },
     });
   }
 };
@@ -171,14 +172,25 @@ describe('capabilities', () => {
       'GIF output requires Honeymelon Desktop',
     );
     expect(available('audio')).toEqual(['wav']);
-    expect(available('video')).toEqual([]);
+    expect(available('video')).toEqual(['mp4', 'webm']);
+    expect(
+      result.video.find((entry) => entry.format === 'webm')?.codecs,
+    ).toEqual(['vp9', 'av1']);
+    expect(result.video.find((entry) => entry.format === 'mkv')?.reason).toBe(
+      'MKV output requires Honeymelon Desktop',
+    );
     expect(workers.every((worker) => worker.terminated)).toBe(true);
     await service.dispose();
   });
 
   it('disables image output when workers cannot use OffscreenCanvas', async () => {
     const service = create((request, worker) =>
-      worker.respond({ type: 'capabilities', offscreen: false, encoders: [] }),
+      worker.respond({
+        type: 'capabilities',
+        offscreen: false,
+        encoders: [],
+        video: { mp4: [], webm: [] },
+      }),
     );
     const { image } = await service.discoverCapabilities();
     expect(image.every((entry) => !entry.available)).toBe(true);
@@ -551,16 +563,78 @@ describe('audio and video', () => {
     await service.dispose();
   });
 
-  it('never admits video transcoding', async () => {
+  it('transcodes video with the requested settings and bounded duration', async () => {
+    const requests: WorkerRequest[] = [];
+    const service = create((request, worker) => {
+      requests.push(request);
+      capabilities(request, worker);
+      if (request.type === 'video') {
+        worker.respond({ type: 'progress', value: 40 });
+        worker.respond({
+          type: 'result',
+          blob: new Blob([new Uint8Array(32)], { type: 'video/mp4' }),
+        });
+      }
+    });
+    const webm = new File(
+      [new Uint8Array([0x1a, 0x45, 0xdf, 0xa3])],
+      'clip.webm',
+    );
+    await service.enqueue({
+      mediaType: 'video',
+      files: service.intake([webm]),
+      target,
+      outputFormat: 'mp4',
+      spec: {
+        kind: 'video',
+        codec: 'h264',
+        quality: 'high',
+        speed: 'medium',
+        width: 640,
+        includeAudio: false,
+      },
+    });
+    const [job] = (await settled(service)).jobs;
+    expect(job?.state).toBe('succeeded');
+    expect(service.output(job!.id)?.name).toBe('clip.mp4');
+    expect(requests.find((request) => request.type === 'video')).toMatchObject({
+      container: 'mp4',
+      codec: 'h264',
+      quality: 'high',
+      width: 640,
+      includeAudio: false,
+      maxSeconds: defaultLimits.videoSeconds,
+    });
+    await service.dispose();
+  });
+
+  it('rejects video formats and codecs the browser has not verified', async () => {
     const service = create();
+    const clip = () =>
+      service.intake([new File([new Uint8Array(4)], 'clip.webm')]);
     await expect(
       service.enqueue({
         mediaType: 'video',
-        files: service.intake([new File([new Uint8Array(4)], 'clip.webm')]),
+        files: clip(),
         target,
-        outputFormat: 'mp4',
+        outputFormat: 'mov',
       }),
     ).rejects.toThrow('Output encoder unavailable');
+    await expect(
+      service.enqueue({
+        mediaType: 'video',
+        files: clip(),
+        target,
+        outputFormat: 'mp4',
+        spec: {
+          kind: 'video',
+          codec: 'prores',
+          quality: 'balanced',
+          speed: 'medium',
+          includeAudio: true,
+        },
+      }),
+    ).rejects.toThrow('Requested codec is unavailable');
     await service.dispose();
   });
 });
