@@ -6,8 +6,8 @@
 
 **Budget:** $0. Use the existing GitHub repository and static site.
 
-The work is educational content, not a promise of a release date.
-Do not publish a conversion claim before testing it on the named build.
+The work is educational content, not a promise of a release date. Do not publish
+a conversion claim before testing it on the named build.
 
 ## Week 1: November 9–15
 
