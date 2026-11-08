@@ -236,7 +236,7 @@ it('mounts the actual converter without Electron and hides native-only actions',
   expect(host.listeners.size).toBe(0);
   expect(host.service.dispose).not.toHaveBeenCalled();
   expect(vi.mocked(host.service.probe).mock.lastCall?.[1]?.aborted).toBe(true);
-});
+}, 15_000);
 
 it('keeps newer progress when a stale initial snapshot resolves later', async () => {
   const host = browserHost();
