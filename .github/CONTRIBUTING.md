@@ -41,13 +41,14 @@ We welcome suggestions for new features that could enhance Honeymelon.
 The **published stable desktop** release is v2.2.3, with the original Comet
 interface. The separate **unsigned desktop beta** v3.0.0-beta.1 has a newer
 React interface. The repository development branch is moving toward
-v3.0.0-beta.2. Honeymelon Web is implemented in source but its public
-deployment remains gated by [issue #85](https://github.com/Thavarshan/honeymelon/issues/85).
+v3.0.0-beta.2. Honeymelon Web is implemented in source but its public deployment
+remains gated by
+[issue #85](https://github.com/Thavarshan/honeymelon/issues/85).
 
 ### First contribution: a small documentation fix
 
-You do **not** need FFmpeg binaries, code signing, Cloudflare credentials or
-a release environment to improve a Markdown document.
+You do **not** need FFmpeg binaries, code signing, Cloudflare credentials or a
+release environment to improve a Markdown document.
 
 1. Check [newcomer FAQ](../docs/contributing/NEWCOMER_FAQ.md) and look for a
    verified issue with a narrow file path and acceptance criteria.
@@ -71,8 +72,8 @@ documentation. Before contributing code, please read the following guidelines:
 1. **Fork**: Fork the repository to your GitHub account by clicking the "Fork"
    button at the top right of the repository page.
 2. **Clone**: Clone **your own fork**, not the upstream project. Replace
-   `YOUR_GITHUB_USERNAME` with your GitHub handle. Keep an `upstream`
-   remote for reading the original repository.
+   `YOUR_GITHUB_USERNAME` with your GitHub handle. Keep an `upstream` remote for
+   reading the original repository.
 
    ```bash
    git clone https://github.com/YOUR_GITHUB_USERNAME/honeymelon.git
@@ -158,8 +159,8 @@ documentation. Before contributing code, please read the following guidelines:
 #### Step 5: Respond to Feedback
 
 We may have some feedback or questions about your PR. Please be responsive and
-willing to make adjustments as needed. Merge is not guaranteed, and review availability depends
-on maintainer capacity.
+willing to make adjustments as needed. Merge is not guaranteed, and review
+availability depends on maintainer capacity.
 
 ### Code Style and Guidelines
 
