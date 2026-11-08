@@ -1,7 +1,7 @@
 # Honeymelon growth scorecard
 
-First verified observation: **2026-11-09** (Asia/Colombo).
-GitHub API collection: `2026-11-08T19:52:39.404Z` (UTC).
+First verified observation: **2026-11-09** (Asia/Colombo). GitHub API
+collection: `2026-11-08T19:52:39.404Z` (UTC).
 
 ## Baseline
 
@@ -25,7 +25,7 @@ Sources:
 - [Dated per-asset observation](snapshots/2026-11-09.md)
 - [Weekly CSV ledger](snapshots/weekly.csv)
 
-**Important:** These are *cumulative per-asset events*, not campaign growth,
+**Important:** These are _cumulative per-asset events_, not campaign growth,
 installs, unique users or active users. One downloader can fetch several assets.
 Metadata downloads are excluded from binary counts. The stable release predates
 the campaign. No historical daily downloads were invented.
