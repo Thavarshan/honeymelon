@@ -1,0 +1,22 @@
+name: Temporary formatting inspection for issue 115
+
+on:
+  push:
+    branches: ['docs/issue-115-contributor-onboarding']
+    paths: ['.github/workflows/format-inspect-115.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  prettier-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+      - name: Show formatter diff
+        run: |
+          npm exec --yes --package prettier@3.9.10 -- prettier --write docs/contributing/*.md .github/CONTRIBUTING.md
+          git diff -- docs/contributing .github/CONTRIBUTING.md
