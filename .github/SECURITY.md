@@ -1,20 +1,33 @@
 # Security Policy
 
-**PLEASE DON'T DISCLOSE SECURITY-RELATED ISSUES PUBLICLY,
-[SEE BELOW](#reporting-a-vulnerability).**
+## Supported releases
 
-## Supported Versions
+Honeymelon's development branch receives security fixes as maintainers are
+able to prepare and verify them. The latest published stable desktop release
+is [v2.2.3](https://github.com/Thavarshan/honeymelon/releases/latest);
+the [v3.0.0-beta.1](https://github.com/Thavarshan/honeymelon/releases/tag/v3.0.0-beta.1)
+build is an **unsigned prerelease** for testing, not a claim of security
+support or operating-system trust. Check the release page for current status
+before installing. Report vulnerabilities affecting either release privately.
 
-Security fixes target the current development branch. Published prereleases are
-testing builds; report issues privately before disclosing vulnerabilities.
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+**Do not post vulnerability details in a public issue.** Email the repository
+maintainer at [tjthavarshan@gmail.com](mailto:tjthavarshan@gmail.com) with the
+affected version, impact and minimal reproduction. Avoid sending real private
+media or credentials. You can initially request a secure channel for sensitive
+proof-of-concept details.
 
-If you discover a security vulnerability within Honeymelon, please send an email
-to <Jerome Thayananthajothy> (<tjthavarshan@gmail.com>). All security
-vulnerabilities will be promptly addressed.
+There is no guaranteed response or remediation deadline. If you receive no
+acknowledgment, follow up through the same private address rather than
+publishing an exploitable report without coordination.
 
-### Public PGP Key
+## Historical OpenPGP key
+
+The key below was originally published under the former **Comet** identity.
+Its continued ownership/current validity has not been re-verified for this
+policy update. If encryption is necessary, confirm the key fingerprint with
+the maintainer over a separate trusted channel before using it.
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
