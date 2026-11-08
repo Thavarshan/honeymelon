@@ -18,11 +18,11 @@
     "@honeymelon/core": "*",
     "@honeymelon/ui": "*",
     "fflate": "0.8.3",
-    "i18next": "26.4.7",
-    "lucide-react": "0.577.0",
+    "i18next": "26.7.2",
+    "lucide-react": "1.69.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-i18next": "17.0.20"
+    "react-i18next": "17.1.13"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",

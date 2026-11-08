@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactElement } from 'react';
-import { ShieldCheck, Github, MonitorCheck } from 'lucide-react';
+import { ShieldCheck, GitBranch, MonitorCheck } from 'lucide-react';
 import { DownloadLibrary } from '../../src/components/download-library';
 import { OpenFromHash } from '../../src/components/open-from-hash';
 import { SmartDownload } from '../../src/components/smart-download';
@@ -70,7 +70,7 @@ export default function DownloadPage(): ReactElement {
           </p>
         </article>
         <article>
-          <Github aria-hidden="true" />
+          <GitBranch aria-hidden="true" />
           <h2>Open source.</h2>
           <p>
             Every build comes from GitHub Releases, published from public source
