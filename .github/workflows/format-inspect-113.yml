@@ -1,0 +1,22 @@
+name: Temporary formatting inspection for issue 113
+
+on:
+  push:
+    branches: ['docs/issue-113-verified-growth-baseline']
+    paths: ['.github/workflows/format-inspect-113.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  prettier-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+      - name: Show formatter diff
+        run: |
+          npm exec --yes --package prettier@3.9.10 -- prettier --write docs/marketing/SCORECARD.md docs/marketing/snapshots/2026-11-09.md
+          git diff -- docs/marketing/SCORECARD.md docs/marketing/snapshots/2026-11-09.md
