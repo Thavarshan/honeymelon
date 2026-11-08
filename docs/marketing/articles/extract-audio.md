@@ -14,8 +14,8 @@ you can extract the relevant stream, sometimes without re-encoding it.
 - **FLAC:** lossless compression where supported by the intended tools.
 - **AAC:** common in many video and mobile workflows.
 
-The exact output choices depend on the software build and its encoders.
-A file may have no audio stream, several language tracks or unusual codecs.
+The exact output choices depend on the software build and its encoders. A file
+may have no audio stream, several language tracks or unusual codecs.
 
 ## A careful local workflow
 
@@ -26,29 +26,28 @@ A file may have no audio stream, several language tracks or unusual codecs.
 5. Convert, then listen to the saved audio.
 6. Compare duration, beginning, middle and ending against the source.
 
-Honeymelon Desktop handles media locally, without a required account or
-upload to a Honeymelon-operated service.
+Honeymelon Desktop handles media locally, without a required account or upload
+to a Honeymelon-operated service.
 
-The README's current React interface depicts the **unsigned
-v3.0.0-beta.1** desktop release. The latest stable desktop release is
-**v2.2.3** and uses a different interface.
+The README's current React interface depicts the **unsigned v3.0.0-beta.1**
+desktop release. The latest stable desktop release is **v2.2.3** and uses a
+different interface.
 
-Some formats offer settings for bitrate, sample rate and channel count.
-Higher bitrates do not restore quality already missing from the recording.
-Converting lossy audio to a lossless container also does not make it
-lossless in quality.
+Some formats offer settings for bitrate, sample rate and channel count. Higher
+bitrates do not restore quality already missing from the recording. Converting
+lossy audio to a lossless container also does not make it lossless in quality.
 
 ## Troubleshooting
 
-If the file is silent, verify that the source actually has an audio track.
-If it has multiple tracks, verify which one the converter chose.
-If the output is too big, compare the available formats and settings.
+If the file is silent, verify that the source actually has an audio track. If it
+has multiple tracks, verify which one the converter chose. If the output is too
+big, compare the available formats and settings.
 
-Do not post private video or extracted audio in public bug reports.
-Report the codecs and steps using a synthetic sample instead.
+Do not post private video or extracted audio in public bug reports. Report the
+codecs and steps using a synthetic sample instead.
 
 **Next step:** see the
 [official releases](https://github.com/Thavarshan/honeymelon/releases).
 
-**Review gate:** confirm a real input/output pair and the audio task on
-the named desktop build before publication.
+**Review gate:** confirm a real input/output pair and the audio task on the
+named desktop build before publication.
