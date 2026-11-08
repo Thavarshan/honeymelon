@@ -1,32 +1,34 @@
 # Security Policy
 
-## Supported releases
+## Supported versions
 
-Security fixes target the development branch as maintainer capacity permits. The
-latest stable desktop release is
-[v2.2.3](https://github.com/Thavarshan/honeymelon/releases/latest). The
-[v3.0.0-beta.1](https://github.com/Thavarshan/honeymelon/releases/tag/v3.0.0-beta.1)
-desktop build is an **unsigned prerelease** for testing, not a claim of security
-support. Check release status before installing.
+Security fixes are made on the development branch as capacity allows.
+
+Stable desktop: v2.2.3. Desktop beta: v3.0.0-beta.1 (unsigned).
+
+See the [published releases](https://github.com/Thavarshan/honeymelon/releases).
 
 ## Reporting a vulnerability
 
-**Do not post vulnerabilities in public issues.** Email
-[tjthavarshan@gmail.com](mailto:tjthavarshan@gmail.com) with the affected
-version, impact and minimal reproduction. Do not send personal media or
-credentials. Ask for a secure channel before sharing sensitive proof-of-concept
-details.
+**Never disclose security vulnerabilities in a public issue.**
 
-There is no guaranteed response or remediation deadline. Follow up privately if
-needed.
+Report privately by email to **tjthavarshan@gmail.com**.
+
+Include the affected version, impact and minimal reproduction steps.
+
+Do not send private media, passwords, tokens or other sensitive data.
+
+Ask for a secure channel before sharing sensitive proof-of-concept details.
+
+There is no guaranteed response or remediation deadline.
 
 ## Historical OpenPGP key
 
-The key below was originally published under the former **Comet** identity. Its
-current validity has not been verified for this update. Confirm its fingerprint
-through a trusted channel before encrypting sensitive information.
+The key below names Comet, Honeymelon's former identity.
 
+Its current validity was not reverified for this policy update.
 
+Confirm the fingerprint directly with the maintainer before using it.
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
