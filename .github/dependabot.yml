@@ -1,17 +1,21 @@
 version: 2
+# Routine update PR limits do not disable Dependabot security alerts.
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 2
     groups:
       development:
         dependency-type: development
-    open-pull-requests-limit: 5
+      production:
+        dependency-type: production
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 1
     groups:
       actions:
         patterns: ['*']
