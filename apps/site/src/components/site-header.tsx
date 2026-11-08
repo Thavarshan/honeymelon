@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@honeymelon/ui/components/dialog';
-import { Github, Menu } from 'lucide-react';
+import { GitBranch, Menu } from 'lucide-react';
 import { useState, type ReactElement } from 'react';
 
 const navigation = [
@@ -55,7 +55,7 @@ export function SiteHeader({
             href="https://github.com/Thavarshan/honeymelon"
             aria-label="Honeymelon on GitHub"
           >
-            <Github aria-hidden="true" />
+            <GitBranch aria-hidden="true" />
           </a>
           <Button asChild size="sm" className="hm-pill hm-pill--small">
             <a href="/download/">Download</a>
