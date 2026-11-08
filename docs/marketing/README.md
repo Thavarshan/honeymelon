@@ -62,36 +62,33 @@ takes precedence over premature marketing timelines.
 
 ## GitHub repository discovery and trust audit (rechecked 2026-11-09)
 
-GitHub's repository API now lists the About description as:
+GitHub's API lists the About description as:
 
 > Honeymelon - free, open-source desktop media conversion for video, audio and images. Local processing, no account or uploads.
 
-The homepage is the site Worker at
-`https://honeymelon-site.tjthavarshan.workers.dev`. Current topics include
-`media-converter`, `video-converter`, `audio-converter`,
-`image-converter`, `electron`, `react`, `typescript`, `ffmpeg`,
-`open-source`-adjacent categories and `cross-platform`. The old Vue/Vue3
-topics and malformed Tailwind topic from the October audit are no longer
-present. **The external homepage must still be tested against a live deployed
-site before using it in launch announcements.**
+The homepage is `https://honeymelon-site.tjthavarshan.workers.dev`.
+Current topics include `media-converter`, `video-converter`, `audio-converter`,
+`image-converter`, `electron`, `react`, `typescript`, `ffmpeg` and
+`cross-platform`. The old Vue/Vue3 tags and malformed Tailwind topic are
+gone. The homepage still requires a live availability check before use in any
+launch announcement.
 
-The GitHub API also reports **Discussions disabled**. The original issue
-chooser linked there despite no discussion area. The #112 docs/template
-change replaces that dead entry point with the existing support guide and
-allows a blank issue for non-bug questions.
+GitHub Discussions is disabled. The previous issue chooser linked to that
+unavailable page. The #112 change points to the support guide and allows blank
+issues for general questions.
 
-| Check | Current evidence / action |
-| --- | --- |
-| Repository name, description, topics | GitHub REST API checked 2026-11-09; no stale Vue tags |
-| Public homepage | Workers URL recorded; do not claim healthy deployment from metadata alone |
-| Stable and beta release labels | README distinguishes v2.2.3 stable and unsigned v3.0.0-beta.1 |
-| Bug and feature templates | Updated for actual products and runtime/codec reproduction |
-| Support route | Support guide, GitHub issues and optional blank issue; not disabled Discussions |
-| Security policy | Describes private reporting, development support caveats, and historical PGP key |
-| Contributor setup | `.github/CONTRIBUTING.md` has pinned Node/npm and quality commands |
+| Check                  | Current evidence / action                                     |
+| ---------------------- | ------------------------------------------------------------- |
+| Description and topics | GitHub API checked 2026-11-09; no legacy Vue/Tailwind tags    |
+| Public homepage        | Worker URL on About; live health still needs verification     |
+| Release descriptions   | README distinguishes v2.2.3 stable and unsigned v3.0.0-beta.1 |
+| Issue templates        | Product/version, OS, codec, reproduction and privacy guidance |
+| Support route          | Support guide and issues; Discussions is disabled             |
+| Security policy        | Private reporting, no guaranteed SLA, historical PGP caveat   |
+| Contributor setup      | CONTRIBUTING has pinned Node/npm and quality commands         |
 
-Do not describe beta features as available in the published stable binaries.
-For questions involving private media, ask for synthetic fixtures.
+Never describe beta features as part of the published stable release. Ask for
+synthetic reproduction files instead of personal media.
 
 ## Weekly operating procedure
 
