@@ -1,10 +1,12 @@
 import { createHash } from 'node:crypto';
 
+const ffmpegBuildsRelease = /^\/releases\/download\/autobuild-[\d-]+\/[\w.-]+$/;
+const githubSources = new Map([
+  ['eugeneware/ffmpeg-static', /^\/releases\/download\/b6\.1\.1\/[\w.-]+$/],
+  ['BtbN/FFmpeg-Builds', ffmpegBuildsRelease],
+  ['FFmpeg-Builds/FFmpeg-Builds', ffmpegBuildsRelease],
+]);
 const sources = new Map([
-  [
-    'github.com',
-    /^\/(?:eugeneware\/ffmpeg-static|BtbN\/FFmpeg-Builds)\/releases\/download\/(?:b6\.1\.1|autobuild-[\d-]+)\/[\w.-]+$/,
-  ],
   [
     'ffmpeg.martin-riedl.de',
     /^\/download\/macos\/(?:arm64|amd64)\/[\d._]+\/(?:ffmpeg\.zip|ffprobe\.zip|versions\.txt)$/,
@@ -34,7 +36,15 @@ export function downloadUrl(value, redirect = false) {
     return url.href;
   }
 
-  if (url.search || !sources.get(url.hostname)?.test(url.pathname)) {
+  const githubPath = url.pathname.match(/^\/([^/]+\/[^/]+)(\/.*)$/);
+  const githubAllowed = githubPath
+    ? githubSources.get(githubPath[1])?.test(githubPath[2])
+    : false;
+  const sourceAllowed = sources.get(url.hostname)?.test(url.pathname);
+  if (
+    url.search ||
+    !(url.hostname === 'github.com' ? githubAllowed : sourceAllowed)
+  ) {
     throw new Error('Binary download source is not allowlisted');
   }
 
