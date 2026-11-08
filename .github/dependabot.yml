@@ -1,4 +1,5 @@
 version: 2
+# Routine update PR limits do not disable Dependabot security alerts.
 updates:
   - package-ecosystem: npm
     directory: /
