@@ -60,21 +60,38 @@ current release, URL, supported platform and brand decision immediately before
 shipping. Existing engineering work in #61, #69–#72, #85 and rebrand #86–#96
 takes precedence over premature marketing timelines.
 
-## GitHub repository discovery audit (2026-10-18)
+## GitHub repository discovery and trust audit (rechecked 2026-11-09)
 
-GitHub's public repository About/Topics snapshot included legacy Vue/Vue3
-keywords and an apparent Tailwind typo despite the current React-based beta.
-Proposed description: "Free, open-source desktop media converter for video,
-audio and images. Convert locally with no uploads or account."
+GitHub's repository API now lists the About description as:
 
-Suggested topics to verify against GitHub rules and actually shipped features:
-`media-converter`, `video-converter`, `audio-converter`, `image-converter`,
-`electron`, `react`, `typescript`, `ffmpeg`, `open-source`, `cross-platform`.
+> Honeymelon - free, open-source desktop media conversion for video, audio and images. Local processing, no account or uploads.
 
-The issue template's support link calls this a "library" and says issues are
-bug-only while feature templates exist. Security documentation also references a
-different product and stale support versions. These need careful correction: see
-[M1](https://github.com/Thavarshan/honeymelon/issues/112), not silent removal.
+The homepage is the site Worker at
+`https://honeymelon-site.tjthavarshan.workers.dev`. Current topics include
+`media-converter`, `video-converter`, `audio-converter`,
+`image-converter`, `electron`, `react`, `typescript`, `ffmpeg`,
+`open-source`-adjacent categories and `cross-platform`. The old Vue/Vue3
+topics and malformed Tailwind topic from the October audit are no longer
+present. **The external homepage must still be tested against a live deployed
+site before using it in launch announcements.**
+
+The GitHub API also reports **Discussions disabled**. The original issue
+chooser linked there despite no discussion area. The #112 docs/template
+change replaces that dead entry point with the existing support guide and
+allows a blank issue for non-bug questions.
+
+| Check | Current evidence / action |
+| --- | --- |
+| Repository name, description, topics | GitHub REST API checked 2026-11-09; no stale Vue tags |
+| Public homepage | Workers URL recorded; do not claim healthy deployment from metadata alone |
+| Stable and beta release labels | README distinguishes v2.2.3 stable and unsigned v3.0.0-beta.1 |
+| Bug and feature templates | Updated for actual products and runtime/codec reproduction |
+| Support route | Support guide, GitHub issues and optional blank issue; not disabled Discussions |
+| Security policy | Describes private reporting, development support caveats, and historical PGP key |
+| Contributor setup | `.github/CONTRIBUTING.md` has pinned Node/npm and quality commands |
+
+Do not describe beta features as available in the published stable binaries.
+For questions involving private media, ask for synthetic fixtures.
 
 ## Weekly operating procedure
 
