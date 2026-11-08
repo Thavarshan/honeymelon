@@ -60,12 +60,12 @@
       ]
     },
     "linux-arm64": {
-      "sourceRelease": "https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-09-30-13-08",
+      "sourceRelease": "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/tag/autobuild-2026-09-30-13-08",
       "sourceCode": "https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz",
-      "buildRecipe": "https://github.com/BtbN/FFmpeg-Builds",
+      "buildRecipe": "https://github.com/FFmpeg-Builds/FFmpeg-Builds",
       "files": [
         {
-          "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-09-30-13-08/ffmpeg-n9.0.2-17-g2a571b6068-linuxarm64-gpl-9.0.tar.xz",
+          "url": "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/download/autobuild-2026-09-30-13-08/ffmpeg-n9.0.2-17-g2a571b6068-linuxarm64-gpl-9.0.tar.xz",
           "sha256": "91afcd7695d4bbbb9e0057aa10baaf9875ec4e1a97303f9059ec971336a2ab46",
           "compression": "tar.xz",
           "directory": "ffmpeg-n9.0.2-17-g2a571b6068-linuxarm64-gpl-9.0",
@@ -74,12 +74,12 @@
       ]
     },
     "linux-x64": {
-      "sourceRelease": "https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-09-30-13-08",
+      "sourceRelease": "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/tag/autobuild-2026-09-30-13-08",
       "sourceCode": "https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz",
-      "buildRecipe": "https://github.com/BtbN/FFmpeg-Builds",
+      "buildRecipe": "https://github.com/FFmpeg-Builds/FFmpeg-Builds",
       "files": [
         {
-          "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-09-30-13-08/ffmpeg-n9.0.2-17-g2a571b6068-linux64-gpl-9.0.tar.xz",
+          "url": "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/download/autobuild-2026-09-30-13-08/ffmpeg-n9.0.2-17-g2a571b6068-linux64-gpl-9.0.tar.xz",
           "sha256": "68ee646831adaae2495618346f3bba94ff207ff83bbd34d643e7004730d66269",
           "compression": "tar.xz",
           "directory": "ffmpeg-n9.0.2-17-g2a571b6068-linux64-gpl-9.0",
@@ -115,13 +115,13 @@
       ]
     },
     "win32-arm64": {
-      "sourceRelease": "https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-08-31-13-27",
+      "sourceRelease": "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/tag/autobuild-2026-08-31-13-27",
       "sourceCode": "https://ffmpeg.org/releases/ffmpeg-8.1.2.tar.xz",
-      "buildRecipe": "https://github.com/BtbN/FFmpeg-Builds",
+      "buildRecipe": "https://github.com/FFmpeg-Builds/FFmpeg-Builds",
       "notes": "Pin before Windows ARM64 startup regression: https://github.com/BtbN/FFmpeg-Builds/issues/675",
       "files": [
         {
-          "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-08-31-13-27/ffmpeg-n8.1.2-50-g1a748fe2cd-winarm64-gpl-8.1.zip",
+          "url": "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/download/autobuild-2026-08-31-13-27/ffmpeg-n8.1.2-50-g1a748fe2cd-winarm64-gpl-8.1.zip",
           "sha256": "722be613f4fdb0b114671515c44a747edd86b814d4e367ca11b10df4539e6e74",
           "compression": "zip",
           "output": "archive",

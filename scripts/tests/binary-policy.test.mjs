@@ -36,6 +36,60 @@ test('all committed sources are allowed, but arbitrary endpoints are rejected', 
   assert.throws(() => verifyDownload(payload, '0'.repeat(64)), /mismatch/);
 });
 
+test('allows the renamed FFmpeg release while keeping repository paths exact', () => {
+  const canonical = manifest.targets['linux-x64'].files[0].url;
+  const old = canonical.replace(
+    'FFmpeg-Builds/FFmpeg-Builds',
+    'BtbN/FFmpeg-Builds',
+  );
+  const unrelated = canonical.replace(
+    'FFmpeg-Builds/FFmpeg-Builds',
+    'untrusted/FFmpeg-Builds',
+  );
+
+  assert.equal(downloadUrl(canonical), canonical);
+  assert.equal(downloadUrl(old), old);
+  assert.throws(() => downloadUrl(unrelated), /not allowlisted/);
+});
+
+test('follows the FFmpeg repository rename and still pins redirected bytes', async () => {
+  const canonical = manifest.targets['linux-x64'].files[0].url;
+  const old = canonical.replace(
+    'FFmpeg-Builds/FFmpeg-Builds',
+    'BtbN/FFmpeg-Builds',
+  );
+  let requests = 0;
+
+  const result = await fetchBinary({ url: old, sha256 }, async (url) => {
+    requests += 1;
+    if (requests === 1) {
+      assert.equal(url, old);
+
+      return new Response(null, {
+        status: 301,
+        headers: { location: canonical },
+      });
+    }
+
+    if (requests === 2) {
+      assert.equal(url, canonical);
+
+      return new Response(null, {
+        status: 302,
+        headers: {
+          location:
+            'https://release-assets.githubusercontent.com/github-production-release-asset/asset',
+        },
+      });
+    }
+
+    return new Response(payload);
+  });
+
+  assert.deepEqual(result, payload);
+  assert.equal(requests, 3);
+});
+
 test('redirect targets are rejected before a second network request', async () => {
   let requests = 0;
   await assert.rejects(
