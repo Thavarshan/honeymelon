@@ -1,59 +1,87 @@
 # Honeymelon growth scorecard
 
-**Status:** Initial measurement protocol. Current values need verified live
-collection; no analytics tools or product telemetry have been installed.
+First verified observation: **2026-11-09** (Asia/Colombo). GitHub API
+collection: `2026-11-08T19:52:39.404Z` (UTC).
 
-## Initial observation
+## Baseline
 
-| Metric                           | Observed      | Observation context                            | Trust                    |
-| -------------------------------- | ------------- | ---------------------------------------------- | ------------------------ |
-| GitHub stars                     | 157           | Public repository page crawl around 2026-10-17 | Provisional; recheck     |
-| GitHub forks                     | 11            | Same public repository page crawl              | Provisional; recheck     |
-| Stable release                   | v2.2.3        | Main branch README checked 2026-10-18          | Confirm against Releases |
-| Beta candidate                   | v3.0.0-beta.1 | Main branch README checked 2026-10-18          | Unsigned beta            |
-| Stable downloads                 | Unknown       | Release asset counts not yet retrieved         | Do not estimate          |
-| Website sessions                 | Unknown       | No verified aggregate analytics source         | Do not estimate          |
-| First-time external contributors | Unknown       | Need defined author/date query                 | Do not estimate          |
-| Actionable user reports          | Unknown       | Needs tagged/manual issue sample               | Do not estimate          |
+- GitHub stars: **157**.
+- GitHub forks: **11**.
+- Latest stable desktop release: **v2.2.3**.
+- Stable binary asset download events: **2,184** (9 binary assets).
+- Stable `RELEASES` metadata download events: **17** (excluded).
+- Published unsigned desktop beta: **v3.0.0-beta.1**.
+- Beta binary asset download events: **177** (12 binary assets).
+- Beta `SHA256SUMS` download events: **3** (excluded).
+- Website visits and referral traffic: **unknown**.
+- First-time external accepted contributors: **unknown**.
+- Actionable user feedback: **unknown**.
 
-A release asset download is not an install, conversion, unique human user, or
-active customer. GitHub stars are interest signals, not a business metric.
+Sources:
 
-## Weekly snapshot template
+- [GitHub repository API](https://api.github.com/repos/Thavarshan/honeymelon)
+- [Stable release API](https://api.github.com/repos/Thavarshan/honeymelon/releases/tags/v2.2.3)
+- [Beta release API](https://api.github.com/repos/Thavarshan/honeymelon/releases/tags/v3.0.0-beta.1)
+- [Dated per-asset observation](snapshots/2026-11-09.md)
+- [Weekly CSV ledger](snapshots/weekly.csv)
 
-Use one copy per week, always recording the source and collection time.
+**Important:** These are _cumulative per-asset events_, not campaign growth,
+installs, unique users or active users. One downloader can fetch several assets.
+Metadata downloads are excluded from binary counts. The stable release predates
+the campaign. No historical daily downloads were invented.
 
-| Field                                               | Value      |
-| --------------------------------------------------- | ---------- |
-| Week ending (Asia/Colombo)                          | YYYY-MM-DD |
-| GitHub stars / delta                                | Unknown    |
-| GitHub forks / delta                                | Unknown    |
-| Stable asset downloads / delta                      | Unknown    |
-| Beta asset downloads / delta                        | Unknown    |
-| External first-time contributor PRs accepted        | Unknown    |
-| Actionable user feedback                            | Unknown    |
-| Website visitors/referrers (aggregated, if enabled) | Unknown    |
-| Tutorials / community interactions                  | Unknown    |
-| Sources and timestamps                              | TBD        |
-| Key objections / support issues                     | TBD        |
-| Top 3 next actions                                  | TBD        |
+## Weekly snapshot checklist
 
-## Working goalposts (not forecasts)
+Create a new dated observation and append a CSV row each week.
 
-- +100 GitHub stars versus **verified** baseline
-- 5 accepted PRs from external contributors
-- 25 actionable user reports
-- 500 qualified release asset downloads
-- 12 useful articles/tutorials; 10 appropriate community/directory placements
+- Week ending (Asia/Colombo): `YYYY-MM-DD`.
+- Exact collection time and API sources: unknown until measured.
+- Stars and delta from previous comparable snapshot: unknown.
+- Forks and delta: unknown.
+- Stable binary download events and delta: unknown.
+- Beta binary download events and delta: unknown.
+- Accepted external first-time contributor PRs: unknown.
+- Actionable user feedback: unknown.
+- Aggregate website visits/referrers (if available): unknown.
+- Tutorials and authentic community interactions: unknown.
+- Channels tried and measured results: unknown.
+- Objections, uncertainty and lessons learned: unknown.
+- Next three prioritized actions: unknown.
 
-## Measurement discipline
+## Privacy-conscious UTM names
 
-- Track stable and beta separately.
-- Compare same measurement windows; retain raw source/date and methodology.
-- Where an asset is replaced or renamed, annotate discontinuity.
-- Avoid PII, file upload tracking, fingerprinting and invasive telemetry.
-- Do not assume every web visit results in an installation.
-- Do not imply causation from one content post without reasonable referral
-  evidence; report directional correlations honestly.
+Use public campaign identifiers, never user-specific tags.
 
-Tracking ticket: https://github.com/Thavarshan/honeymelon/issues/113
+Example:
+
+`?utm_source=devto&utm_medium=community&utm_campaign=honeymelon_beta_2026&utm_content=architecture_story`
+
+- `utm_source`: channel, such as `devto` or `show_hn`.
+- `utm_medium`: `community`, `article` or `directory`.
+- `utm_campaign`: fixed campaign slug.
+- `utm_content`: post or creative identifier, not a person.
+
+Do not install analytics, fingerprinting or upload telemetry. Without
+independently verified aggregate analytics, attribution stays unknown.
+
+## Working targets
+
+- Add 100 stars above the verified baseline.
+- Accept PRs from 5 new external contributors.
+- Collect 25 actionable feedback reports.
+- Gain 500 **additional** binary asset download events after this snapshot.
+- Publish 12 useful tutorials and 10 community/directory placements.
+
+These are planning goals, not forecasts or claims of current adoption.
+
+## Measurement rules
+
+- Separate stable and beta releases.
+- Requery sources with a timestamp at each snapshot.
+- Note asset replacements and changes in release contents.
+- Never call asset downloads installs or unique users.
+- Keep missing data marked **unknown**.
+- Do not collect personal data or files.
+- Report associations, not unsupported claims of causation.
+
+Tracking issue: [#113](https://github.com/Thavarshan/honeymelon/issues/113).
