@@ -60,35 +60,44 @@ current release, URL, supported platform and brand decision immediately before
 shipping. Existing engineering work in #61, #69–#72, #85 and rebrand #86–#96
 takes precedence over premature marketing timelines.
 
-## GitHub repository discovery and trust audit (rechecked 2026-11-09)
+## GitHub discovery and trust audit (2026-11-09)
 
-GitHub's API lists the About description as:
+The GitHub API reports this public repository description:
 
-> Honeymelon - free, open-source desktop media conversion for video, audio and images. Local processing, no account or uploads.
+> Honeymelon: free, open-source desktop media conversion.
 
-The homepage is `https://honeymelon-site.tjthavarshan.workers.dev`.
-Current topics include `media-converter`, `video-converter`, `audio-converter`,
-`image-converter`, `electron`, `react`, `typescript`, `ffmpeg` and
-`cross-platform`. The old Vue/Vue3 tags and malformed Tailwind topic are
-gone. The homepage still requires a live availability check before use in any
-launch announcement.
+The full About description also explains local processing and no uploads.
 
-GitHub Discussions is disabled. The previous issue chooser linked to that
-unavailable page. The #112 change points to the support guide and allows blank
-issues for general questions.
+The public homepage points to a Cloudflare Workers site.
 
-| Check                  | Current evidence / action                                     |
-| ---------------------- | ------------------------------------------------------------- |
-| Description and topics | GitHub API checked 2026-11-09; no legacy Vue/Tailwind tags    |
-| Public homepage        | Worker URL on About; live health still needs verification     |
-| Release descriptions   | README distinguishes v2.2.3 stable and unsigned v3.0.0-beta.1 |
-| Issue templates        | Product/version, OS, codec, reproduction and privacy guidance |
-| Support route          | Support guide and issues; Discussions is disabled             |
-| Security policy        | Private reporting, no guaranteed SLA, historical PGP caveat   |
-| Contributor setup      | CONTRIBUTING has pinned Node/npm and quality commands         |
+Homepage: `https://honeymelon-site.tjthavarshan.workers.dev`.
 
-Never describe beta features as part of the published stable release. Ask for
-synthetic reproduction files instead of personal media.
+Actual live website availability needs separate verification.
+
+Current topics include `electron`, `react`, `typescript` and `ffmpeg`.
+
+The old Vue/Vue3 tags and malformed Tailwind topic are gone.
+
+GitHub Discussions is **disabled**. The old support link was broken.
+
+Issue #112 replaces the dead link with the support guide.
+
+The issue chooser also allows blank issues for general questions.
+
+### Current checklist
+
+- About and topics: checked with GitHub API on 2026-11-09.
+- Website URL: recorded but live availability is not yet attested.
+- README: stable v2.2.3 and unsigned beta v3.0.0-beta.1 are distinct.
+- Bug template: product, version, OS, architecture and codec context.
+- Feature template: useful task, platform and alternatives.
+- Support: GitHub issues and a readable support guide.
+- Security: private email reporting and historical PGP warning.
+- Setup: CONTRIBUTING contains pinned Node/npm and test commands.
+
+Do not advertise beta features as part of stable desktop releases.
+
+Ask for synthetic files instead of private media.
 
 ## Weekly operating procedure
 
