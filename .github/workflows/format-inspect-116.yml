@@ -1,0 +1,22 @@
+name: Temporary formatting inspection for issue 116
+
+on:
+  push:
+    branches: ['docs/issue-116-content-calendar-drafts']
+    paths: ['.github/workflows/format-inspect-116.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  prettier-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+      - name: Show formatter diff
+        run: |
+          npm exec --yes --package prettier@3.9.10 -- prettier --write docs/marketing/EDITORIAL_CALENDAR.md docs/marketing/EDITORIAL_CALENDAR_2026-11.md docs/marketing/COPY_BANK.md docs/marketing/articles/*.md
+          git diff -- docs/marketing/EDITORIAL_CALENDAR.md docs/marketing/EDITORIAL_CALENDAR_2026-11.md docs/marketing/COPY_BANK.md docs/marketing/articles
