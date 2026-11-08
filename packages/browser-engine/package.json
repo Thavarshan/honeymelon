@@ -25,6 +25,6 @@
     "mediabunny": "1.65.2"
   },
   "devDependencies": {
-    "vite": "8.3.4"
+    "vite": "8.3.6"
   }
 }
