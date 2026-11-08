@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: "Help, support and reporting guidance"
-    url: "https://github.com/Thavarshan/honeymelon/blob/main/.github/SUPPORT.md"
-    about: "Read the support guide for questions, version details and private security reports. Use a bug or feature template when possible."
+  - name: Help, support and reporting guidance
+    url: https://github.com/Thavarshan/honeymelon/blob/main/.github/SUPPORT.md
+    about: Read the support guide before filing an issue.
