@@ -1,0 +1,22 @@
+name: Temporary formatter inspection for issue 84
+
+on:
+  push:
+    branches: ['docs/issue-84-align-web-environments']
+    paths: ['.github/workflows/format-inspect-84.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  prettier-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+      - name: Show formatter diff
+        run: |
+          npm exec --yes --package prettier@3.9.10 -- prettier --write docs/operations/web-deployment.md
+          git diff -- docs/operations/web-deployment.md
