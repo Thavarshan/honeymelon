@@ -60,21 +60,44 @@ current release, URL, supported platform and brand decision immediately before
 shipping. Existing engineering work in #61, #69–#72, #85 and rebrand #86–#96
 takes precedence over premature marketing timelines.
 
-## GitHub repository discovery audit (2026-10-18)
+## GitHub discovery and trust audit (2026-11-09)
 
-GitHub's public repository About/Topics snapshot included legacy Vue/Vue3
-keywords and an apparent Tailwind typo despite the current React-based beta.
-Proposed description: "Free, open-source desktop media converter for video,
-audio and images. Convert locally with no uploads or account."
+The GitHub API reports this public repository description:
 
-Suggested topics to verify against GitHub rules and actually shipped features:
-`media-converter`, `video-converter`, `audio-converter`, `image-converter`,
-`electron`, `react`, `typescript`, `ffmpeg`, `open-source`, `cross-platform`.
+> Honeymelon: free, open-source desktop media conversion.
 
-The issue template's support link calls this a "library" and says issues are
-bug-only while feature templates exist. Security documentation also references a
-different product and stale support versions. These need careful correction: see
-[M1](https://github.com/Thavarshan/honeymelon/issues/112), not silent removal.
+The full About description also explains local processing and no uploads.
+
+The public homepage points to a Cloudflare Workers site.
+
+Homepage: `https://honeymelon-site.tjthavarshan.workers.dev`.
+
+Actual live website availability needs separate verification.
+
+Current topics include `electron`, `react`, `typescript` and `ffmpeg`.
+
+The old Vue/Vue3 tags and malformed Tailwind topic are gone.
+
+GitHub Discussions is **disabled**. The old support link was broken.
+
+Issue #112 replaces the dead link with the support guide.
+
+The issue chooser also allows blank issues for general questions.
+
+### Current checklist
+
+- About and topics: checked with GitHub API on 2026-11-09.
+- Website URL: recorded but live availability is not yet attested.
+- README: stable v2.2.3 and unsigned beta v3.0.0-beta.1 are distinct.
+- Bug template: product, version, OS, architecture and codec context.
+- Feature template: useful task, platform and alternatives.
+- Support: GitHub issues and a readable support guide.
+- Security: private email reporting and historical PGP warning.
+- Setup: CONTRIBUTING contains pinned Node/npm and test commands.
+
+Do not advertise beta features as part of stable desktop releases.
+
+Ask for synthetic files instead of private media.
 
 ## Weekly operating procedure
 

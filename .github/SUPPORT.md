@@ -1,10 +1,27 @@
-# Support Questions
+# Support and questions
 
-Honeymelon has no account-based or paid support. Ask questions and report
-problems in [GitHub issues](https://github.com/Thavarshan/honeymelon/issues); a
-free GitHub account is the only account needed. Include your Honeymelon version,
-operating system, CPU architecture (x64 or ARM64), how you installed it, and
-whether Comet is also installed.
+Honeymelon is free software without paid support.
 
-Report security vulnerabilities privately as described in
-[SECURITY.md](SECURITY.md), not in a public issue.
+[Open an issue](https://github.com/Thavarshan/honeymelon/issues/new/choose).
+
+Choose **Bug report** for defects or **Feature request** for suggestions.
+
+For general questions, use a blank issue.
+
+Search [existing issues](https://github.com/Thavarshan/honeymelon/issues) first.
+
+Include the app version, operating system and CPU architecture.
+
+For browser problems, include the browser and version.
+
+The stable desktop release and unsigned betas have different capabilities.
+
+For upgrades, say whether the legacy Comet app is installed.
+
+Never attach private media, credentials or sensitive logs.
+
+Share synthetic test media and reproduction steps when possible.
+
+Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+
+There is no guaranteed maintainer response time.

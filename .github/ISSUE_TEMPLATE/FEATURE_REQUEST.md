@@ -1,19 +1,27 @@
 ---
 name: "Feature request"
-about: "Request a new and or additional feature."
+about: "Suggest a useful change to Honeymelon."
 ---
 
-<!-- DO NOT THROW THIS AWAY -->
-<!-- Fill out the FULL versions with patch versions -->
+## Problem
 
-### Description
+What task or limitation are you trying to address? Who benefits?
 
-<!-- Description of the requested configuration -->
+## Proposed behavior
 
-### Feature Details
+Describe the workflow you would like and what success looks like.
 
-<!-- Please describe the now requesting feature to the best of your abilities. -->
+## Product and platform
 
-#### Additional Information
+- Product: Desktop / Web (planned or beta) / Site
+- OS or browser (if relevant):
 
-<!-- Please describe the now requesting feature to the best of your abilities. -->
+## Alternatives and constraints
+
+What workarounds have you tried? Note any accessibility, privacy, compatibility or performance needs.
+
+## Additional context
+
+Add mockups or links to related issues, if useful. Do not share private media files.
+
+The browser converter has different codec capabilities from the desktop app; suggestions do not imply the format is already supported.

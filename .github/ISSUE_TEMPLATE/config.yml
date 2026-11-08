@@ -1,7 +1,5 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
-  - name: Help & Support
-    url: https://github.com/Thavarshan/honeymelon/discussions
-    about:
-      'This repository is only for reporting bugs. If you have a question or
-      need help using the library, click:'
+  - name: Help, support and reporting guidance
+    url: https://github.com/Thavarshan/honeymelon/blob/main/.github/SUPPORT.md
+    about: Read the support guide before filing an issue.

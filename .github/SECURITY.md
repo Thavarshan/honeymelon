@@ -1,20 +1,34 @@
 # Security Policy
 
-**PLEASE DON'T DISCLOSE SECURITY-RELATED ISSUES PUBLICLY,
-[SEE BELOW](#reporting-a-vulnerability).**
+## Supported versions
 
-## Supported Versions
+Security fixes are made on the development branch as capacity allows.
 
-Security fixes target the current development branch. Published prereleases are
-testing builds; report issues privately before disclosing vulnerabilities.
+Stable desktop: v2.2.3. Desktop beta: v3.0.0-beta.1 (unsigned).
 
-## Reporting a Vulnerability
+See the [published releases](https://github.com/Thavarshan/honeymelon/releases).
 
-If you discover a security vulnerability within Honeymelon, please send an email
-to <Jerome Thayananthajothy> (<tjthavarshan@gmail.com>). All security
-vulnerabilities will be promptly addressed.
+## Reporting a vulnerability
 
-### Public PGP Key
+**Never disclose security vulnerabilities in a public issue.**
+
+Report privately by email to **tjthavarshan@gmail.com**.
+
+Include the affected version, impact and minimal reproduction steps.
+
+Do not send private media, passwords, tokens or other sensitive data.
+
+Ask for a secure channel before sharing sensitive proof-of-concept details.
+
+There is no guaranteed response or remediation deadline.
+
+## Historical OpenPGP key
+
+The key below names Comet, Honeymelon's former identity.
+
+Its current validity was not reverified for this policy update.
+
+Confirm the fingerprint directly with the maintainer before using it.
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
