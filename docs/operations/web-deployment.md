@@ -35,8 +35,8 @@ admission policy, reused), and use GitHub environments.
    environment-level `CLOUDFLARE_API_TOKEN` secret in these exact environments
    with only _Workers Scripts: Edit_ permission for the intended account.
    Require reviewers on `site-production`. Do not create `web-preview` or
-   `web-production` expecting this workflow to read their secrets; the
-   current workflow does not select those environment names.
+   `web-production` expecting this workflow to read their secrets; the current
+   workflow does not select those environment names.
 3. Repository **variables**: `HONEYMELON_WEB_PREVIEW_URL` and
    `HONEYMELON_WEB_PRODUCTION_URL` (exact `https://` origins, different from
    each other), plus the existing `CLOUDFLARE_ACCOUNT_ID`.
