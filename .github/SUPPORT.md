@@ -1,18 +1,27 @@
 # Support and questions
 
-Honeymelon is free and open-source; there is no paid support. [Open a GitHub
-issue](https://github.com/Thavarshan/honeymelon/issues/new/choose) for help or
-to report a problem. Choose **Bug report** for defects, **Feature request** for
-suggestions or a blank issue for general questions. Search [existing
-issues](https://github.com/Thavarshan/honeymelon/issues) first.
+Honeymelon is free software without paid support.
 
-Include the exact app version, operating system and architecture, installation
-source, or browser and version. Stable desktop, unsigned desktop beta and
-browser beta capabilities differ. If it concerns an upgrade, state whether
-legacy Comet is installed.
+[Open an issue](https://github.com/Thavarshan/honeymelon/issues/new/choose).
 
-Do not attach private media, credentials or unredacted logs. Prefer generated
-sample files and minimal reproduction steps.
+Choose **Bug report** for defects or **Feature request** for suggestions.
 
-For security vulnerabilities, follow [SECURITY.md](SECURITY.md). Do not report
-them publicly. Maintainers have no guaranteed response time. 
+For general questions, use a blank issue.
+
+Search [existing issues](https://github.com/Thavarshan/honeymelon/issues) first.
+
+Include the app version, operating system and CPU architecture.
+
+For browser problems, include the browser and version.
+
+The stable desktop release and unsigned betas have different capabilities.
+
+For upgrades, say whether the legacy Comet app is installed.
+
+Never attach private media, credentials or sensitive logs.
+
+Share synthetic test media and reproduction steps when possible.
+
+Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+
+There is no guaranteed maintainer response time.
