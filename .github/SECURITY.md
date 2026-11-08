@@ -2,32 +2,31 @@
 
 ## Supported releases
 
-Honeymelon's development branch receives security fixes as maintainers are
-able to prepare and verify them. The latest published stable desktop release
-is [v2.2.3](https://github.com/Thavarshan/honeymelon/releases/latest);
-the [v3.0.0-beta.1](https://github.com/Thavarshan/honeymelon/releases/tag/v3.0.0-beta.1)
-build is an **unsigned prerelease** for testing, not a claim of security
-support or operating-system trust. Check the release page for current status
-before installing. Report vulnerabilities affecting either release privately.
+Security fixes target the development branch as maintainer capacity permits. The
+latest stable desktop release is
+[v2.2.3](https://github.com/Thavarshan/honeymelon/releases/latest). The
+[v3.0.0-beta.1](https://github.com/Thavarshan/honeymelon/releases/tag/v3.0.0-beta.1)
+desktop build is an **unsigned prerelease** for testing, not a claim of security
+support. Check release status before installing.
 
 ## Reporting a vulnerability
 
-**Do not post vulnerability details in a public issue.** Email the repository
-maintainer at [tjthavarshan@gmail.com](mailto:tjthavarshan@gmail.com) with the
-affected version, impact and minimal reproduction. Avoid sending real private
-media or credentials. You can initially request a secure channel for sensitive
-proof-of-concept details.
+**Do not post vulnerabilities in public issues.** Email
+[tjthavarshan@gmail.com](mailto:tjthavarshan@gmail.com) with the affected
+version, impact and minimal reproduction. Do not send personal media or
+credentials. Ask for a secure channel before sharing sensitive proof-of-concept
+details.
 
-There is no guaranteed response or remediation deadline. If you receive no
-acknowledgment, follow up through the same private address rather than
-publishing an exploitable report without coordination.
+There is no guaranteed response or remediation deadline. Follow up privately if
+needed.
 
 ## Historical OpenPGP key
 
-The key below was originally published under the former **Comet** identity.
-Its continued ownership/current validity has not been re-verified for this
-policy update. If encryption is necessary, confirm the key fingerprint with
-the maintainer over a separate trusted channel before using it.
+The key below was originally published under the former **Comet** identity. Its
+current validity has not been verified for this update. Confirm its fingerprint
+through a trusted channel before encrypting sensitive information.
+
+
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
