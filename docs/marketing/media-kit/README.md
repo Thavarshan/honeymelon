@@ -1,7 +1,7 @@
 # Honeymelon media kit
 
-**Status:** Source materials prepared for maintainer review on 2026-11-09.
-This is not proof of a completed recorded demo or a released browser app.
+**Status:** Source materials prepared for maintainer review on 2026-11-09. This
+is not proof of a completed recorded demo or a released browser app.
 
 ## What exists
 
@@ -16,7 +16,8 @@ This is not proof of a completed recorded demo or a released browser app.
 
 ## Reusable assets
 
-- [Versioned screenshot manifest](SCREENSHOTS.md), with descriptions and alt text.
+- [Versioned screenshot manifest](SCREENSHOTS.md), with descriptions and alt
+  text.
 - [Video storyboard and captions](DEMO_SCRIPT.md), ready for a real recording.
 - [Press kit and FAQ](PRESS_COPY.md), including genuine limitations.
 - [Open Graph vector source](../../../apps/site/public/og-honeymelon.svg).
@@ -29,9 +30,12 @@ rather than creating an unrelated design or duplicating the site implementation.
 
 ## Must verify before distribution
 
-- Record the actual desktop beta flow on a supported device with synthetic media.
-- Confirm the shot names, actions, destination and captions match the installed UI.
-- Produce a real 30–45-second video, not a slideshow advertised as product proof.
+- Record the actual desktop beta flow on a supported device with synthetic
+  media.
+- Confirm the shot names, actions, destination and captions match the installed
+  UI.
+- Produce a real 30–45-second video, not a slideshow advertised as product
+  proof.
 - Confirm any stable-version screenshot separately using the stable binary.
 - Verify the desired platform and release installers and published checksums.
 - Beta macOS and Windows installers are not signed or notarized.
