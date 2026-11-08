@@ -36,6 +36,31 @@ We welcome suggestions for new features that could enhance Honeymelon.
    you think it’s important, and how it could benefit users. If possible,
    suggest how it could be implemented.
 
+### Which version am I helping?
+
+The **published stable desktop** release is v2.2.3, with the original Comet
+interface. The separate **unsigned desktop beta** v3.0.0-beta.1 has a newer
+React interface. The repository development branch is moving toward
+v3.0.0-beta.2. Honeymelon Web is implemented in source but its public
+deployment remains gated by [issue #85](https://github.com/Thavarshan/honeymelon/issues/85).
+
+### First contribution: a small documentation fix
+
+You do **not** need FFmpeg binaries, code signing, Cloudflare credentials or
+a release environment to improve a Markdown document.
+
+1. Check [newcomer FAQ](../docs/contributing/NEWCOMER_FAQ.md) and look for a
+   verified issue with a narrow file path and acceptance criteria.
+2. Fork and clone your own fork as described below.
+3. Use the pinned Node.js and npm versions; run `npm ci` if needed.
+4. Make one focused change and run `npm run format:check`.
+5. Open a PR showing what changed, how you checked it and what you did not test.
+
+The full desktop/browser matrices run in GitHub Actions, and may take longer
+than a docs-only check. Do not start an application release or paste signing
+secrets into public PRs. Contributor issue candidates need triage before a
+`good first issue` label is assigned.
+
 ### Contributing Code
 
 We love contributions, whether they’re bug fixes, new features, or improving
@@ -45,11 +70,14 @@ documentation. Before contributing code, please read the following guidelines:
 
 1. **Fork**: Fork the repository to your GitHub account by clicking the "Fork"
    button at the top right of the repository page.
-2. **Clone**: Clone the forked repository to your local machine.
+2. **Clone**: Clone **your own fork**, not the upstream project. Replace
+   `YOUR_GITHUB_USERNAME` with your GitHub handle. Keep an `upstream`
+   remote for reading the original repository.
 
    ```bash
-   git clone https://github.com/Thavarshan/honeymelon.git
+   git clone https://github.com/YOUR_GITHUB_USERNAME/honeymelon.git
    cd honeymelon
+   git remote add upstream https://github.com/Thavarshan/honeymelon.git
    ```
 
 #### Step 2: Set Up the Development Environment
@@ -66,11 +94,12 @@ documentation. Before contributing code, please read the following guidelines:
 2. **Run the application**: Start the application in development mode.
 
    ```bash
-   npm run start
+   npm run dev -w @honeymelon/desktop
    ```
 
-3. **Make your changes**: Create a new branch for your work, and make your
-   changes.
+3. **Make your changes**: Create a new branch on your fork for your work, and
+   make your changes. The desktop app requires the pinned native binary staging;
+   documentation fixes do not.
 
    ```bash
    git checkout -b feature/your-feature-name
@@ -80,6 +109,7 @@ documentation. Before contributing code, please read the following guidelines:
    functionality. Write unit tests if applicable.
 
    ```bash
+   npm run format:check
    npm run lint
    npm run typecheck
    npm test
@@ -128,8 +158,8 @@ documentation. Before contributing code, please read the following guidelines:
 #### Step 5: Respond to Feedback
 
 We may have some feedback or questions about your PR. Please be responsive and
-willing to make adjustments as needed. Once your PR is approved, it will be
-merged into the main branch.
+willing to make adjustments as needed. Merge is not guaranteed, and review availability depends
+on maintainer capacity.
 
 ### Code Style and Guidelines
 
