@@ -1,6 +1,7 @@
 # Honeymelon — initial editorial calendar
 
-**Current next six weeks:** [November 9 to December 20, 2026](EDITORIAL_CALENDAR_2026-11.md).
+**Current next six weeks:**
+[November 9 to December 20, 2026](EDITORIAL_CALENDAR_2026-11.md).
 
 Working six-week plan, prepared 2026-10-18. **Dates are editorial targets, not
 software release commitments.** Every item requires a fresh claims check,
