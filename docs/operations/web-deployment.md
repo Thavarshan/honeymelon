@@ -30,9 +30,13 @@ admission policy, reused), and use GitHub environments.
 1. In Cloudflare, nothing to create by hand: the first `wrangler deploy` creates
    the `honeymelon-web-preview` and `honeymelon-web` Workers on `workers.dev`.
    No KV, R2, D1 or other binding is used.
-2. GitHub **environments** `web-preview` and `web-production`. Give each a
-   `CLOUDFLARE_API_TOKEN` secret scoped to _Workers Scripts: Edit_ on this
-   account only. Require reviewers on `web-production`.
+2. The workflow uses the **existing GitHub environments** `site-preview` and
+   `site-production`, shared with the static marketing-site deploy. Place the
+   environment-level `CLOUDFLARE_API_TOKEN` secret in these exact environments
+   with only _Workers Scripts: Edit_ permission for the intended account.
+   Require reviewers on `site-production`. Do not create `web-preview` or
+   `web-production` expecting this workflow to read their secrets; the
+   current workflow does not select those environment names.
 3. Repository **variables**: `HONEYMELON_WEB_PREVIEW_URL` and
    `HONEYMELON_WEB_PRODUCTION_URL` (exact `https://` origins, different from
    each other), plus the existing `CLOUDFLARE_ACCOUNT_ID`.
@@ -98,4 +102,6 @@ These cannot be changed from a PR. Recommended:
   one approving review; disallow force pushes.
 - Actions → General: workflow permissions _read_ by default (workflows already
   declare minimal `permissions`).
-- Environments `site-production` and `web-production`: required reviewers.
+- Environment `site-production`: required reviewers for both the static
+  marketing site and the web app. Configure the actual production environment,
+  not an unused `web-production` environment.
