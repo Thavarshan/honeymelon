@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
+  <title id="title">Honeymelon — local media conversion</title>
+  <desc id="description">Honeymelon desktop app: video, audio, images. Free, open source, and local. Desktop beta is unsigned.</desc>
+  <rect width="1200" height="675" fill="#fff"/>
+  <rect x="30" y="30" width="1140" height="615" rx="24" fill="none" stroke="#d4d4d4" stroke-width="2"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="148" font-size="46" font-weight="700" fill="#171717">Honeymelon</text>
+    <text x="600" y="278" font-size="64" font-weight="700" fill="#171717">Your media. Your computer.</text>
+    <text x="600" y="355" font-size="64" font-weight="700" fill="#171717">Your control.</text>
+    <text x="600" y="432" font-size="28" fill="#404040">Video, audio, images. Process files locally.</text>
+    <rect x="405" y="482" width="390" height="60" rx="12" fill="#171717"/>
+    <text x="600" y="520" font-size="24" fill="#fafafa">Free &amp; Open Source</text>
+    <text x="600" y="606" font-size="21" fill="#525252">Desktop app · macOS · Windows · Linux</text>
+  </g>
+</svg>
