@@ -1,0 +1,22 @@
+name: Temporary formatting inspection for issue 114
+
+on:
+  push:
+    branches: ['docs/issue-114-versioned-media-kit']
+    paths: ['.github/workflows/format-inspect-114.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  prettier-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+      - name: Show formatter diff
+        run: |
+          npm exec --yes --package prettier@3.9.10 -- prettier --write docs/marketing/media-kit/*.md
+          git diff -- docs/marketing/media-kit
