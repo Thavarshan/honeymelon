@@ -12,7 +12,7 @@
 :root {
   color-scheme: light;
   /* Body-weight secondary text that passes WCAG AA on white and muted. */
-  --hm-secondary: oklch(0.44 0 0);
+  --hm-secondary: oklch(0.42 0 0);
   --hm-hairline: color-mix(in oklch, var(--foreground) 12%, transparent);
   --hm-content: 980px;
   --hm-wide: 1120px;
