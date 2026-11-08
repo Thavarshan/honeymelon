@@ -36,8 +36,8 @@ All linked guidance should be checked again before actual publication.
 ## Channel ledger and sequence
 
 See [outreach-ledger.csv](outreach-ledger.csv) for candidates, links, rules,
-draft topics, status and results. Candidate is **not permission to post**.
-For subreddit-specific rules, a moderator or current rules page check remains
+draft topics, status and results. Candidate is **not permission to post**. For
+subreddit-specific rules, a moderator or current rules page check remains
 mandatory. Do not assume a global Reddit 10% self-promotion rule is a permit.
 
 The initial low-risk work is:
@@ -61,14 +61,15 @@ sockpuppets, misleading testimonials or bulk unsolicited DMs.
 - [ ] Site and beta download URLs checked from intended audience networks.
 - [ ] Web preview and production environment secrets reviewed (#84).
 - [ ] Web live deployment smoke tests and rollback verified (#84).
-- [ ] Platform/browser, mobile, accessibility and privacy testing complete (#85).
+- [ ] Platform/browser, mobile, accessibility and privacy testing complete
+      (#85).
 - [ ] Public source/demo screenshots and language reviewed by owner.
 - [ ] Owner approves accounts, identity, channels and publisher permissions.
 - [ ] Venue-specific rules and moderation permissions confirmed.
 - [ ] Feedback triage coverage available for several days after publication.
 
-If any gate fails, use an educational conversation or an honest private
-review request, not a public product-launch claim.
+If any gate fails, use an educational conversation or an honest private review
+request, not a public product-launch claim.
 
 ## Feedback, moderation and response plan
 
@@ -76,10 +77,10 @@ Collect only actionable reports: OS/architecture, exact release, source and
 output formats, expected and actual behavior, synthetic reproduction and
 relevant safely redacted error text. Never request private media.
 
-Track substantive questions, moderator feedback and fixes as GitHub issues,
-with the platform URL only when permitted. Acknowledge criticism respectfully
-without debating a user's lived experience. If a supported conversion fails,
-link a reproduction and investigate instead of repeating marketing claims.
+Track substantive questions, moderator feedback and fixes as GitHub issues, with
+the platform URL only when permitted. Acknowledge criticism respectfully without
+debating a user's lived experience. If a supported conversion fails, link a
+reproduction and investigate instead of repeating marketing claims.
 
 For a report of security/privacy leakage, stop distribution of the affected
 claim, direct details to the private security policy, and review the launch
@@ -90,7 +91,6 @@ without permission. Do not estimate attribution where analytics are absent.
 
 ## Publication record
 
-No outreach published from this plan as of 2026-11-09.
-No feedback or referral results can be claimed yet. The campaign issue #117
-must stay open until actual permitted soft-launch feedback and launch-gate
-acceptance are evidenced.
+No outreach published from this plan as of 2026-11-09. No feedback or referral
+results can be claimed yet. The campaign issue #117 must stay open until actual
+permitted soft-launch feedback and launch-gate acceptance are evidenced.
