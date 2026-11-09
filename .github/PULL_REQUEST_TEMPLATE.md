@@ -1,27 +1,25 @@
 ## Purpose
 
-_What problem does this solve? Link the relevant issue when there is one._
-
-Closes #
+Describe the problem or feature. Link the related issue if applicable.
 
 ## Approach
 
-_What changed, and why?_
+Explain what changed and why.
 
 ## Verification
 
-_Keep this short for documentation-only changes. Include exact commands and outcomes for code changes._
+For documentation-only changes, a single check result is enough.
 
-- Checks run: `npm run format:check` — pass/fail/not run (explain)
-- Other tests and results:
-- Checks skipped and why:
+- Commands run and results:
+- Checks skipped and reasons:
+- UI screenshots, app version, and OS/browser (if relevant):
 
-_For UI changes, attach screenshots if useful and identify the app version and OS/browser tested. Do not include secrets, private files, or credentials. Do not claim a live deployment or release without verification._
+Do not include secrets, credentials, or private media. Do not claim a live deployment or published release without evidence.
 
-## Open questions
+## Open questions (optional)
 
-_Anything reviewers should resolve before merging? Remove this section if none._
+List any questions reviewers should resolve before merging.
 
 ## Learning (optional)
 
-_Useful references, discoveries, or trade-offs._
+Add useful references or discoveries.
