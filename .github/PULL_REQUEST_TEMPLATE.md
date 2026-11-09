@@ -1,17 +1,26 @@
 ## Purpose
 
-_Describe the problem or feature in addition to a link to the issues._
+Describe the problem or feature. Link the related issue if applicable.
 
 ## Approach
 
-_How does this change address the problem?_
+Explain what changed and why.
 
-#### Open Questions and Pre-Merge TODOs
+## Verification
 
-- [ ] Use github checklists. When solved, check the box and explain the answer.
+For documentation-only changes, a single check result is enough.
 
-## Learning
+- Commands run and results:
+- Checks skipped and reasons:
+- UI screenshots, app version, and OS/browser (if relevant):
 
-_Describe the research stage_
+Do not include secrets, credentials, or private media. Do not claim a live
+deployment or published release without evidence.
 
-_Links to blog posts, patterns, libraries or addons used to solve this problem_
+## Open questions (optional)
+
+List any questions reviewers should resolve before merging.
+
+## Learning (optional)
+
+Add useful references or discoveries.
