@@ -14,7 +14,8 @@ For documentation-only changes, a single check result is enough.
 - Checks skipped and reasons:
 - UI screenshots, app version, and OS/browser (if relevant):
 
-Do not include secrets, credentials, or private media. Do not claim a live deployment or published release without evidence.
+Do not include secrets, credentials, or private media. Do not claim a live
+deployment or published release without evidence.
 
 ## Open questions (optional)
 
