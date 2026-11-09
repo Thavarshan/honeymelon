@@ -90,11 +90,12 @@ verification; #85 tracks browser converter launch and release gates. The
 repository contains deploy, verification, and rollback workflows, but do not
 infer from source code or CI that live environments are configured or deployed.
 
-Follow the
-[static site deployment and recovery guide](../operations/site-deployment.md).
-Before publishing an indexed production site, confirm the actual origin and response
-headers, test keyboard and screen-reader behavior on that deployment, and review
-on physical devices. Field Core Web Vitals require production traffic and remain
-post-publication measurements. These checks are not claimed complete by the
-source-delivery record. Automated axe scans do not establish full WCAG
-conformance.
+Follow the [static site deployment and recovery guide](../operations/site-deployment.md).
+
+Before publishing an indexed production site, confirm the actual origin and
+response headers. Test keyboard and screen-reader behavior on the deployed site.
+Review the site on physical devices.
+
+Field Core Web Vitals require production traffic. These remain
+post-publication measurements. The source-delivery record does not claim these
+checks are complete. Automated axe scans do not establish full WCAG conformance.
