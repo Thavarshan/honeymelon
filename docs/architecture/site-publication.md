@@ -87,9 +87,8 @@ Issue #72 is closed following delivery of the site publication source and
 workflow. Closure does not establish that a live Cloudflare deployment has
 been configured or verified. Issue #84 tracks deployment environment and live
 verification; #85 tracks browser converter launch and release gates. The
-repository contains deploy, verification, and rollback workflows,
-but do not infer from source code or CI that live environments are configured or
-deployed. Follow
+repository contains deploy, verification, and rollback workflows, but do not
+infer from source code or CI that live environments are configured or deployed. Follow
 [static site deployment and recovery](../operations/site-deployment.md). Before
 publishing an indexed production site, confirm the actual origin and response
 headers, test keyboard and screen-reader behavior on that deployment, and review
