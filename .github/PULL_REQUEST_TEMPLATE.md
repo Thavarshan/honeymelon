@@ -1,17 +1,27 @@
 ## Purpose
 
-_Describe the problem or feature in addition to a link to the issues._
+_What problem does this solve? Link the relevant issue when there is one._
+
+Closes #
 
 ## Approach
 
-_How does this change address the problem?_
+_What changed, and why?_
 
-#### Open Questions and Pre-Merge TODOs
+## Verification
 
-- [ ] Use github checklists. When solved, check the box and explain the answer.
+_Keep this short for documentation-only changes. Include exact commands and outcomes for code changes._
 
-## Learning
+- Checks run: `npm run format:check` — pass/fail/not run (explain)
+- Other tests and results:
+- Checks skipped and why:
 
-_Describe the research stage_
+_For UI changes, attach screenshots if useful and identify the app version and OS/browser tested. Do not include secrets, private files, or credentials. Do not claim a live deployment or release without verification._
 
-_Links to blog posts, patterns, libraries or addons used to solve this problem_
+## Open questions
+
+_Anything reviewers should resolve before merging? Remove this section if none._
+
+## Learning (optional)
+
+_Useful references, discoveries, or trade-offs._
