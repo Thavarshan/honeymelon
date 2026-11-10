@@ -138,6 +138,27 @@ test('batches images to WebP where the encoder is verified and exports a ZIP', a
   for (const name of ['rgb.webp', 'rgb (2).webp']) {
     expect(Buffer.from(entries[name]!.subarray(8, 12)).toString()).toBe('WEBP');
   }
+
+  // Download events do not tell the app whether the user retained the file.
+  await expect(
+    page.getByText(/browser cannot confirm it was saved/i),
+  ).toBeVisible();
+  const wouldWarn = await page.evaluate(() => {
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+
+    return event.defaultPrevented;
+  });
+  expect(wouldWarn).toBe(true);
+  await page.getByRole('button', { name: "I've saved these files" }).click();
+  expect(
+    await page.evaluate(() => {
+      const event = new Event('beforeunload', { cancelable: true });
+      window.dispatchEvent(event);
+
+      return event.defaultPrevented;
+    }),
+  ).toBe(false);
 });
 
 test('explains unsupported, renamed, animated and oversized inputs', async ({

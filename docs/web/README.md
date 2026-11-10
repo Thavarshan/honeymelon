@@ -29,15 +29,16 @@ Limits protect the tab, not a promise about every device. They halve on devices
 reporting 4–7 GB of memory and quarter below 4 GB (Chromium reports memory;
 other browsers use the defaults).
 
-| Limit                                | Default (8 GB+)                                    |
-| ------------------------------------ | -------------------------------------------------- |
-| Image file / audio file / video file | 100 / 128 / 256 MiB                                |
-| Image or video frame pixels          | 50 megapixels                                      |
-| Decoded audio                        | 512 MiB of PCM (about 11 minutes of 48 kHz stereo) |
-| Finished files held for download     | 512 MiB                                            |
-| Files in one tab                     | 200                                                |
-| Video length                         | 10 minutes                                         |
-| One conversion                       | 15 minutes                                         |
+| Limit                                | Default (8 GB+)                                           |
+| ------------------------------------ | --------------------------------------------------------- |
+| Image file / audio file / video file | 100 / 128 / 256 MiB                                       |
+| Image or video frame pixels          | 50 megapixels                                             |
+| Decoded audio                        | 512 MiB of PCM (about 11 minutes of 48 kHz stereo)        |
+| Finished files held for download     | 512 MiB                                                   |
+| One Download all ZIP                 | 64 MiB of retained output (larger: download individually) |
+| Files in one tab                     | 200                                                       |
+| Video length                         | 10 minutes                                                |
+| One conversion                       | 15 minutes                                                |
 
 Files are converted one at a time, each in a fresh background worker. Cancel
 stops the worker immediately and discards partial output. Large files, long
@@ -48,7 +49,10 @@ tracks, animated images and other video formats belong in Desktop.
 - Selected files, decoded media and converted results stay in the tab's memory.
   They are not uploaded, logged or written to browser storage. Closing or
   reloading the tab discards them, and the app warns first if you have running
-  jobs or files you have not downloaded.
+  jobs or files you have not explicitly confirmed as saved. A browser download
+  request **does not prove a file was saved**. Check your Downloads folder, then
+  use **I've saved these files** to acknowledge requested downloads. Outputs
+  remain available to retry until you remove them or leave the tab.
 - There is no account, analytics, telemetry or conversion server. The app's
   Content Security Policy allows network requests only to its own origin, and
   the built code is checked to contain no `fetch`, beacon, WebSocket or
@@ -96,7 +100,10 @@ only when you choose to, so a running conversion is never cut off.
 - **A format is greyed out**: hover it to see why. WebP and AVIF depend on the
   browser's encoder.
 - **Nothing downloads**: allow multiple downloads for the site, or use
-  **Download all**, which saves one ZIP.
+  **Download all**, which requests one ZIP if the finished outputs total at most
+  64 MiB. ZIP preparation shows progress and can be canceled. Larger batches
+  must be downloaded individually. Your browser may still block or cancel a
+  download; confirm the file is present before acknowledging it in Honeymelon.
 
 Report problems through
 [GitHub issues](https://github.com/Thavarshan/honeymelon/issues/new/choose).
