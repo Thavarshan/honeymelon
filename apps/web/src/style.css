@@ -116,8 +116,30 @@ p {
 .web-toolbar {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 10px;
   min-width: 0;
+}
+.web-export-progress {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.web-confirmation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  max-width: 480px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-align: right;
+}
+.web-confirmation span {
+  min-width: 0;
+  flex: 1 1 200px;
 }
 .web-retained {
   color: var(--muted-foreground);
@@ -162,6 +184,15 @@ p {
   font-size: 12px;
 }
 @media (max-width: 720px) {
+  .desktop-toolbar:has(.web-toolbar) {
+    flex-wrap: wrap;
+  }
+  .web-toolbar {
+    flex: 1 1 100%;
+  }
+  .web-confirmation {
+    max-width: none;
+  }
   .web-header {
     flex-wrap: wrap;
     gap: 6px 12px;

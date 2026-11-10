@@ -17,7 +17,7 @@ import {
 } from '@honeymelon/browser-engine';
 import { App } from './App';
 import i18n from './i18n';
-import { WebConverterPlatform } from './platform';
+import { maxZipBytes, WebConverterPlatform } from './platform';
 import { preferencesKey } from './preferences';
 
 /** Answers like the real worker, without a canvas. */
@@ -151,6 +151,7 @@ it('converts locally, downloads by name, zips all and guards tab close', async (
   await user.click(first!);
   expect(saved.at(-1)?.name).toBe('photo.jpg');
   await user.click(screen.getByRole('button', { name: 'Download all' }));
+  await waitFor(() => expect(saved).toHaveLength(2));
   const archive = saved.at(-1)!;
   expect(archive.name).toMatch(/^honeymelon-\d{14}\.zip$/);
   expect(
@@ -158,10 +159,98 @@ it('converts locally, downloads by name, zips all and guards tab close', async (
       unzipSync(new Uint8Array(await archive.blob.arrayBuffer())),
     ).sort(),
   ).toEqual(['README.txt', 'photo (2).jpg', 'photo.jpg']);
-  expect(platform.unsaved()).toBe(0);
+  // A download request cannot confirm disk persistence.
+  expect(platform.unsaved()).toBe(2);
   const after = new Event('beforeunload', { cancelable: true });
   window.dispatchEvent(after);
-  expect(after.defaultPrevented).toBe(false);
+  expect(after.defaultPrevented).toBe(true);
+  expect(screen.getByText(/browser cannot confirm it was saved/)).toBeVisible();
+  await user.click(
+    screen.getByRole('button', { name: "I've saved these files" }),
+  );
+  expect(platform.unsaved()).toBe(0);
+  const confirmed = new Event('beforeunload', { cancelable: true });
+  window.dispatchEvent(confirmed);
+  expect(confirmed.defaultPrevented).toBe(false);
+});
+
+it('keeps outputs protected until every requested file is confirmed', async () => {
+  const user = userEvent.setup();
+  const platform = mount();
+  const image = await screen.findByRole('region', { name: 'Image' });
+  await user.upload(
+    within(image).getByLabelText('Add files', { selector: 'input' }),
+    [png(), png()],
+  );
+  await user.click(within(image).getByRole('button', { name: /^Convert/ }));
+  await waitFor(() =>
+    expect(within(image).getAllByText('Complete')).toHaveLength(2),
+  );
+  const [first] = within(image).getAllByRole('button', {
+    name: 'Download: photo.png',
+  });
+  await user.click(first!);
+  await user.click(
+    screen.getByRole('button', { name: "I've saved these files" }),
+  );
+  expect(platform.unsaved()).toBe(1);
+  const after = new Event('beforeunload', { cancelable: true });
+  window.dispatchEvent(after);
+  expect(after.defaultPrevented).toBe(true);
+});
+
+it('does not claim a blocked download was saved', async () => {
+  const platform = mount();
+  const blob = new Blob(['output']);
+  vi.spyOn(platform.service, 'output').mockReturnValue({
+    name: 'photo.jpg',
+    blob,
+  });
+  vi.spyOn(platform.service, 'outputs').mockReturnValue([
+    ['job', { name: 'photo.jpg', blob }],
+  ]);
+  vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
+    throw new Error('Download blocked');
+  });
+  expect(() => platform.download('job')).toThrow('Download blocked');
+  expect(platform.downloadStatus().awaitingConfirmation).toBe(0);
+  expect(platform.unsaved()).toBe(1);
+});
+
+it('rejects oversized ZIP batches before reading any output', async () => {
+  const platform = mount();
+  const blob = new Blob(['output']);
+  Object.defineProperty(blob, 'size', { value: maxZipBytes + 1 });
+  vi.spyOn(blob, 'slice');
+  vi.spyOn(platform.service, 'outputs').mockReturnValue([
+    ['job', { name: 'large.mp4', blob }],
+  ]);
+  await expect(platform.downloadAll()).rejects.toThrow('64 MiB');
+  expect(blob.slice).not.toHaveBeenCalled();
+  expect(platform.downloadStatus().phase).toBe('idle');
+  expect(platform.unsaved()).toBe(1);
+});
+
+it('cancels ZIP preparation without making a download request', async () => {
+  const platform = mount();
+  const blob = new Blob([new Uint8Array(5 * 1024 * 1024)]);
+  vi.spyOn(platform.service, 'outputs').mockReturnValue([
+    ['job', { name: 'photo.jpg', blob }],
+  ]);
+  platform.subscribe(() => {
+    if (
+      platform.downloadStatus().phase === 'preparing' &&
+      platform.downloadStatus().percent > 0
+    ) {
+      platform.cancelZipExport();
+    }
+  });
+  const pending = platform.downloadAll();
+  expect(platform.downloadStatus().phase).toBe('preparing');
+  await expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+  expect(saved).toHaveLength(0);
+  expect(platform.downloadStatus().phase).toBe('idle');
+  expect(platform.unsaved()).toBe(1);
 });
 
 it('applies stored language and theme, and persists settings changes', async () => {

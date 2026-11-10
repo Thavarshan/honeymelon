@@ -11,13 +11,15 @@ decision: [ADR 0003](../../docs/architecture/0003-browser-media-engine.md).
 
 - `src/platform.ts`: the `ConverterPlatform` host. Creates the engine with a
   bundled worker (`@honeymelon/browser-engine/worker?worker`) and device-aware
-  limits, downloads single outputs, and zips **Download all** (stored,
-  uncompressed) with `fflate`.
+  limits, requests single downloads, and creates bounded, incremental **Download
+  all** ZIP archives (stored, uncompressed) with `fflate`.
 - `src/App.tsx`: header, update prompt, footer, theme and language. Settings
   persist in localStorage (`preferences.ts`, validated field by field); files
   never do.
-- `src/WebToolbar.tsx`: **Download all**, the memory readout, and a
-  `beforeunload` guard while jobs run or outputs are not yet downloaded.
+- `src/WebToolbar.tsx`: **Download all** with progress/cancel, the memory
+  readout, explicit save confirmation, and a `beforeunload` guard while jobs run
+  or outputs are not confirmed as saved. Browser download clicks never count as
+  proof of disk persistence.
 - `src/pwa.ts` + `sw/service-worker.js`: the build emits `/sw.js` with a
   content-hashed version and an explicit precache of every built file. Updates
   wait for the user's **Reload**.
