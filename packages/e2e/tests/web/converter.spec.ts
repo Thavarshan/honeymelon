@@ -107,6 +107,13 @@ test('keeps the live Web vs Desktop guide accessible at phone sizes @mobile', as
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width + 1);
+    // The dialog fades in; WebKit may report partially transparent foreground
+    // and background colours to axe unless the transition has settled.
+    await page.evaluate(async () => {
+      await Promise.all(
+        document.getAnimations().map((animation) => animation.finished),
+      );
+    });
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
       .analyze();
