@@ -3,8 +3,11 @@
 The site is a static Next.js export in `apps/site`. It shares the monorepo
 TypeScript presets, typed ESLint rules, UI primitives and Turbo pipeline. It has
 no media upload API, account service, runtime image optimizer or tracking
-script. The browser converter is explicitly unavailable in the copy; there is no
-product web-converter application.
+script. The marketing site is separate from the browser converter implemented in
+`apps/web` with `packages/browser-engine`. The browser converter processes media
+locally on the user's device, but its presence in source does **not** establish
+a verified public launch or a production-ready deployment. Do not advertise an
+unverified browser converter URL.
 
 ## Canonical deployment
 
@@ -80,14 +83,20 @@ The public pages, source, static SEO output and automated accessibility and
 performance checks were delivered under closed issue #70. Historical evidence is
 in [the P2.2 acceptance record](../releases/site-p2.2-acceptance.md).
 
-Cloudflare preview/production publication is the remaining open site milestone
-(#72). The repository contains its deploy, verification, and rollback workflow,
-but do not infer from source code or CI that live environments are configured or
-deployed. Follow
-[static site deployment and recovery](../operations/site-deployment.md). Before
-publishing an indexed production site, confirm the actual origin and response
-headers, test keyboard and screen-reader behavior on that deployment, and review
-on physical devices. Field Core Web Vitals require production traffic and remain
-post-publication measurements. These checks are not claimed complete by the
-source-delivery record. Automated axe scans do not establish full WCAG
-conformance.
+Issue #72 is closed following delivery of the site publication source and
+workflow. Closure does not establish that a live Cloudflare deployment has been
+configured or verified. Issue #84 tracks deployment environment and live
+verification; #85 tracks browser converter launch and release gates. The
+repository contains deploy, verification, and rollback workflows, but do not
+infer from source code or CI that live environments are configured or deployed.
+
+Follow the
+[static site deployment and recovery guide](../operations/site-deployment.md).
+
+Before publishing an indexed production site, confirm the actual origin and
+response headers. Test keyboard and screen-reader behavior on the deployed site.
+Review the site on physical devices.
+
+Field Core Web Vitals require production traffic. These remain post-publication
+measurements. The source-delivery record does not claim these checks are
+complete. Automated axe scans do not establish full WCAG conformance.
