@@ -117,11 +117,12 @@ test('keeps the live Web vs Desktop guide accessible at phone sizes @mobile', as
 });
 
 test('keeps the capability guide operable at 200% zoom', async ({ page }) => {
-  await page.setViewportSize({ width: 800, height: 800 });
+  // A browser at 200% page zoom on an 800×800 screen exposes roughly
+  // 400×400 CSS pixels. CSS zoom on <html> is not equivalent: it scales
+  // fixed-position dialogs without reducing the CSS viewport consistently
+  // across Chromium, Firefox and WebKit.
+  await page.setViewportSize({ width: 400, height: 400 });
   await page.goto('/');
-  await page.evaluate(() => {
-    document.documentElement.style.zoom = '2';
-  });
   await page.getByRole('button', { name: 'Web vs Desktop' }).click();
   const dialog = page.getByRole('dialog', { name: 'Web vs Desktop' });
   await expect(dialog).toBeVisible();
