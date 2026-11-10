@@ -141,6 +141,41 @@ p {
   min-width: 0;
   flex: 1 1 200px;
 }
+.web-capability-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: min(560px, calc(100vw - 32px));
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.web-capability-guide p {
+  line-height: 1.5;
+}
+.web-guide-formats {
+  display: grid;
+  gap: 10px;
+}
+.web-guide-formats section {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow-wrap: anywhere;
+}
+.web-guide-formats h3 {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.web-guide-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.web-guide-links a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .web-retained {
   color: var(--muted-foreground);
   font-size: 12px;

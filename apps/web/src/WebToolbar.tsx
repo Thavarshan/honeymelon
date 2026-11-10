@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { isTerminal } from '@honeymelon/contracts';
 import { Button, useConverter } from '@honeymelon/converter';
 import type { WebConverterPlatform } from './platform';
+import { WebCapabilityGuide } from './WebCapabilityGuide';
 
 /**
  * Batch export and tab-lifetime safeguards. Rendered inside the converter so
@@ -46,6 +47,7 @@ export function WebToolbar({
 
   return (
     <div className="web-toolbar">
+      <WebCapabilityGuide platform={platform} />
       {!!finished && (
         <span className="web-retained" aria-live="polite">
           {t('web.retained', { count: finished, size })}

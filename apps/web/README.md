@@ -20,6 +20,9 @@ decision: [ADR 0003](../../docs/architecture/0003-browser-media-engine.md).
   readout, explicit save confirmation, and a `beforeunload` guard while jobs run
   or outputs are not confirmed as saved. Browser download clicks never count as
   proof of disk persistence.
+- `src/WebCapabilityGuide.tsx`: accessible **Web vs Desktop** dialog that reads
+  actual discovered output formats and links to Desktop and the browser matrix
+  before files are selected.
 - `src/pwa.ts` + `sw/service-worker.js`: the build emits `/sw.js` with a
   content-hashed version and an explicit precache of every built file. Updates
   wait for the user's **Reload**.

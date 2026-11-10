@@ -89,6 +89,57 @@ test('boots without accounts, native bridge or uploads, and passes axe @mobile',
   ).toBe(false);
 });
 
+test('keeps the live Web vs Desktop guide accessible at phone sizes @mobile', async ({
+  page,
+}) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Web vs Desktop' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Web vs Desktop' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('region', { name: 'Image' })).toContainText(
+      'Available output formats',
+    );
+    await expect(
+      dialog.getByRole('link', { name: 'Get Desktop' }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(width + 1);
+    // The dialog fades in; WebKit may report partially transparent foreground
+    // and background colours to axe unless the transition has settled.
+    await page.evaluate(async () => {
+      await Promise.all(
+        document.getAnimations().map((animation) => animation.finished),
+      );
+    });
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+  }
+});
+
+test('keeps the capability guide operable at 200% zoom', async ({ page }) => {
+  // A browser at 200% page zoom on an 800×800 screen exposes roughly
+  // 400×400 CSS pixels. CSS zoom on <html> is not equivalent: it scales
+  // fixed-position dialogs without reducing the CSS viewport consistently
+  // across Chromium, Firefox and WebKit.
+  await page.setViewportSize({ width: 400, height: 400 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Web vs Desktop' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Web vs Desktop' });
+  await expect(dialog).toBeVisible();
+  const desktop = dialog.getByRole('link', { name: 'Get Desktop' });
+  await desktop.scrollIntoViewIfNeeded();
+  await expect(desktop).toBeInViewport();
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+});
+
 test('converts PNG to a validated JPEG download without touching the source @mobile', async ({
   page,
 }) => {
