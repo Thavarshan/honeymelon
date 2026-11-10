@@ -89,6 +89,49 @@ test('boots without accounts, native bridge or uploads, and passes axe @mobile',
   ).toBe(false);
 });
 
+test('keeps the live Web vs Desktop guide accessible at phone sizes @mobile', async ({
+  page,
+}) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Web vs Desktop' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Web vs Desktop' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('region', { name: 'Image' })).toContainText(
+      'Available output formats',
+    );
+    await expect(
+      dialog.getByRole('link', { name: 'Get Desktop' }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(width + 1);
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+  }
+});
+
+test('keeps the capability guide operable at 200% zoom', async ({ page }) => {
+  await page.setViewportSize({ width: 800, height: 800 });
+  await page.goto('/');
+  await page.evaluate(() => {
+    document.documentElement.style.zoom = '2';
+  });
+  await page.getByRole('button', { name: 'Web vs Desktop' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Web vs Desktop' });
+  await expect(dialog).toBeVisible();
+  const desktop = dialog.getByRole('link', { name: 'Get Desktop' });
+  await desktop.scrollIntoViewIfNeeded();
+  await expect(desktop).toBeInViewport();
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+});
+
 test('converts PNG to a validated JPEG download without touching the source @mobile', async ({
   page,
 }) => {

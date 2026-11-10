@@ -290,3 +290,52 @@ it('shows why video conversion is unavailable instead of offering it', async () 
     'https://example.test/download/',
   );
 });
+
+it('explains live browser format availability and the Desktop alternative', async () => {
+  mount();
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole('button', { name: 'Web vs Desktop' }),
+  );
+  const dialog = screen.getByRole('dialog', { name: 'Web vs Desktop' });
+  expect(
+    within(dialog).getByRole('region', { name: 'Image' }),
+  ).toHaveTextContent('JPG, PNG, JPEG');
+  expect(
+    within(dialog).getByRole('region', { name: 'Audio' }),
+  ).toHaveTextContent('None verified here');
+  expect(
+    within(dialog).getByRole('region', { name: 'Video' }),
+  ).toHaveTextContent('None verified here');
+  expect(within(dialog).getByText(/MP3, AAC, FLAC/)).toBeVisible();
+  expect(
+    within(dialog).getByText(/image 100 MiB, audio 128 MiB, video 256 MiB/),
+  ).toBeVisible();
+  expect(
+    within(dialog).getByRole('link', { name: 'Get Desktop' }),
+  ).toHaveAttribute('href', 'https://example.test/download/');
+  expect(
+    within(dialog).getByRole('link', {
+      name: 'Full browser capability matrix',
+    }),
+  ).toHaveAttribute('href', expect.stringContaining('capability-matrix.md'));
+  await user.keyboard('{Escape}');
+  expect(screen.queryByRole('dialog', { name: 'Web vs Desktop' })).toBeNull();
+});
+
+it.each([
+  ['es', 'Web frente a Desktop', 'Ninguno verificado aquí'],
+  ['fr', 'Web ou Desktop', 'Aucun format vérifié ici'],
+  ['de', 'Web oder Desktop', 'Hier keine Formate bestätigt'],
+  ['ru', 'Web или Desktop', 'Нет подтверждённых форматов'],
+])('localizes the parity guide in %s', async (locale, title, unavailable) => {
+  localStorage.setItem(
+    preferencesKey,
+    JSON.stringify({ locale, theme: 'light' }),
+  );
+  mount();
+  const user = userEvent.setup();
+  await user.click(await screen.findByRole('button', { name: title }));
+  const dialog = screen.getByRole('dialog', { name: title });
+  expect(within(dialog).getAllByText(new RegExp(unavailable))).toHaveLength(2);
+});

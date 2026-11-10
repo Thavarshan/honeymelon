@@ -139,9 +139,10 @@ queue snapshots and submits commands through the narrow preload API.
 
 The shared UI uses shadcn’s default Neutral light/dark theme, Radix primitives,
 Inter typography, tooltips, dialogs, popovers, and Scroll Area. The marketing
-site and repository documentation are implemented. A standalone web converter
-application is not present; the browser adapter and browser test harness provide
-foundations without advertising working browser conversion.
+site and browser converter are implemented as separate static apps. The web
+converter runs locally in the browser with more limited format support; its
+presence in source does not establish a verified public deployment. The web UI
+shows runtime-verified output formats and explains when Desktop is needed.
 
 See the [E2E workspace guide](packages/e2e/README.md) for fixture coverage,
 strict-mode checks, reports, and future web test reuse. The suite distinguishes
@@ -198,9 +199,9 @@ Build outputs are macOS ZIPs, Windows Squirrel installers and portable ZIPs, and
 Linux DEB, RPM, and portable tar archives. `npm run make` invokes Forge;
 `npm run dist:portable` adds the Linux tar with executable modes preserved.
 Packaging and native tests are uncached; npm downloads are cached per lockfile.
-The centralized `@honeymelon/e2e` helpers can also support a future web
-application; there is no web application test project until that application
-exists.
+The centralized `@honeymelon/e2e` suite also exercises the browser converter in
+Chromium, Firefox, WebKit and mobile emulation. Real-device and production
+launch verification remain separate release gates.
 
 A `v<desktop version>` tag runs the full pipeline with signing enabled. Only
 successful native and distro verification unlock the `release` environment's

@@ -19,6 +19,11 @@ The format menu marks everything else (other containers, ProRes, MP3/AAC
 encoding) as unavailable, and the tooltip says why. Unavailable formats are
 never offered and then failed.
 
+The in-app **Web vs Desktop** guide lists output formats verified in the current
+browser, links to the full capability matrix and Desktop releases, and explains
+when a larger or unsupported job needs Desktop. The list is browser-specific,
+not a universal format promise.
+
 Output names follow the source name (`photo.png` → `photo.jpg`). Duplicate names
 get a suffix (`photo (2).jpg`). EXIF orientation is applied; other metadata
 (EXIF, ICC profiles, tags) is not copied.

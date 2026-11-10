@@ -565,6 +565,9 @@ function rethrow(error: unknown): never {
 export class BrowserConversionService extends QueueConversionService {
   private readonly files: BrowserFileStore;
 
+  /** Actual per-session budgets used by the browser executor. */
+  readonly resourceLimits: Readonly<ResourceLimits>;
+
   constructor(options: BrowserEngineOptions) {
     const limits = options.limits ?? defaultLimits;
     const files = new BrowserFileStore(limits.queuedFiles);
@@ -577,6 +580,7 @@ export class BrowserConversionService extends QueueConversionService {
       ),
     );
     this.files = files;
+    this.resourceLimits = limits;
   }
 
   /** Register selected files; returns path-free descriptors. */
